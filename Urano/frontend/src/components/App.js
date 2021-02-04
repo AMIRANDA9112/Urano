@@ -6,9 +6,13 @@ export default class App extends Component {
         super(props);
     }
     render() {
-        return <h1>Testing React Code</h1>;
+        return (
+            <h1>
+                Testing React Code
+            </h1>
+        );
     }
 }
 
-const appDiv = document.getElementByid("app");
+const appDiv = document.getElementById("app");
 render(<App />, appDiv);

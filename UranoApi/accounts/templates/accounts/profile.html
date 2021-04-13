@@ -1,17 +1,17 @@
 {% extends 'feed/base.html' %}
 {%block content%}
 
-  <div class = 'container'></div>
+  <div class = 'container'>
     <div class = "col-sm-2">
       <div class = "media">
-        <img class="rounded-circle account-img img-fluid" src="{{user.profile.image.url}}">
-
-
+        <img class="rounded-circle account-img img-fluid" src="{{ user.profile.image.url }}">
       </div>
 
-      <br>
+
 
       <h3>{{user.username}}</h3>
+
+      <a href="{% url 'profileupdate' %}"><button class = " btn btn-outline-info">edit</button></a>
 
       <div class="card">
 
@@ -26,6 +26,7 @@
 
 
     </div>
+  </div>
 
 
 {%endblock content%}

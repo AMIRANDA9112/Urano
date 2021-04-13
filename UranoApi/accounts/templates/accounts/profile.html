@@ -7,24 +7,18 @@
         <img class="rounded-circle account-img img-fluid" src="{{ user.profile.image.url }}">
       </div>
 
+        <h3>{{user.username}}</h3>
 
+        <a href="{% url 'profileupdate' %}"><button class = " btn btn-outline-info">edit</button></a>
 
-      <h3>{{user.username}}</h3>
+        <div class="card">
 
-      <a href="{% url 'profileupdate' %}"><button class = " btn btn-outline-info">edit</button></a>
+          <div class="card-body">
 
-      <div class="card">
+            {{user.profile.bio}}
 
-        <div class="card-body">
-
-          {{user.profile.bio}}
-
+          </div>
         </div>
-
-      </div>
-
-
-
     </div>
   </div>
 

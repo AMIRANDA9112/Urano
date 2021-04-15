@@ -25,7 +25,10 @@
 
 
                 <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
-                <a class="nav-link active" aria-current="page" href="{% url 'profile' %}">Profile</a>
+                <a class="navbar-brand" href="{%url 'profile'%}">
+                    <img class="rounded-circle account-img img-fluid"
+                    src="{{ user.profile.image.url }}" width="50" height="50">
+                </a>
                 <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Logout</a>
 
 

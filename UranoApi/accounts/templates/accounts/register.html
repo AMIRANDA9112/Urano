@@ -31,7 +31,7 @@
 
                 </div>
 
-                <a href="#"><p>Login, I already have a account</p> </a>
+                <a href="{% url 'login' %}"><p>Login, I already have a account</p> </a>
 
 
             </form>
@@ -41,7 +41,9 @@
 
         {%if messages%}
             {%for message in message%}
-                {{message}}
+                <div class="alert alert-success" role="alert">
+                    {{message}}
+                </div>
             {%endfor%}
         {%endif%}
 

@@ -26,7 +26,8 @@ urlpatterns = [
     path('', include('feed.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='accounts/logout.html'), name='logout'),
-    path('register/', acc_views.register, name='register'),
+    path('register/', acc_views.SignUpView.as_view(), name='register'),
+    path('activate/<uidb64>/<token>/', acc_views.ActivateAccount.as_view(), name='activate'),
     path('profile/', acc_views.profile, name='profile'),
     path('profileupdate/', acc_views.profileupdate, name='profileupdate'),
 ]

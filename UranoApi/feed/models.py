@@ -9,3 +9,4 @@ class Tweet(models.Model):
     text = models.TextField(max_length=280, default='')
     datatime = models.DateTimeField(default=timezone.now)
     uname = models.ForeignKey(User, on_delete=models.CASCADE)
+

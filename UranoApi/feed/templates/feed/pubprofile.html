@@ -1,0 +1,37 @@
+{% extends  'feed/base.html'%}
+
+{%block content%}
+    <div>
+        {%for tweet in object_list%}
+
+        {%if tweet.uname == user%}
+
+            <div class="card">
+              <div class="card-header">
+                  <p>{{tweet.datatime}}</p>
+              </div>
+
+              <div class="card-body">
+
+                <p class="card-text"><h5>{{tweet.text}}</h5></p>
+
+                  <a href="{% url 'tweetupdate' tweet.id %}">
+                      <button class = "btn btn-outline-info">Editar</button>
+                  </a>
+                  <a href="{% url 'tweetdelete' tweet.id %}">
+                      <button class = "btn btn-outline-info">Borrar</button>
+                  </a>
+
+
+
+              </div>
+            </div>
+
+        {% endif %}
+
+        {% endfor %}
+
+    </div>
+
+
+{%endblock content%}

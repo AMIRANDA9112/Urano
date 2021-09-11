@@ -4,56 +4,51 @@
 
 <div class = "container">
     <div class="jumbotron">
-          <h1 class="display-4">Hello {{user.username}}</h1>
-              <p class="lead">Transparencia Electoral
-              </p>
+          <h1 class="display-4">Hola {{user.username}}</h1>
           <hr class="my-4">
-              <p>Create Publication</p>
               <p class="lead">
-                  <a class="btn btn-primary btn-lg" href="{%url 'tweetcreate'%}" role="button">Create</a>
+                  <a class="btn btn-primary btn-lg" href="{%url 'tweetcreate'%}" role="button">Crear Publicación</a>
               </p>
     </div>
-
 
 </div>
 
 
+<div class = 'container'>
+    {%for tweet in object_list%}
 
-
-
-
-    <div class = 'container'>
-        {%for tweet in object_list%}
-
-
-
-            <div class="card">
-              <div class="card-header">
-                <a href="#"><h4>{{tweet.uname}}</h4></a>
-                  <p>{{tweet.datatime}}</p>
-              </div>
-
-              <div class="card-body">
-
-                <p class="card-text"><h5>{{tweet.text}}</h5></p>
-                  {%if tweet.uname == user%}
-                  <a href="{% url 'tweetupdate' tweet.id %}">
-                      <button class = "btn btn-outline-info">Update</button>
-                  </a>
-                  <a href="{% url 'tweetdelete' tweet.id %}">
-                      <button class = "btn btn-outline-info">Delete</button>
-                  </a>
-
-                  {% endif %}
-
-
-
-              </div>
+        <div class="card">
+            <div class = "media">
+        <img class="rounded-circle account-img"
+             src="{{ tweet.img.url }}"
+             alt = "Generic placeholder image"
+             width= "50"
+             height= "50">
             </div>
+          <div class="card-header">
+            <a href="#"><h4>{{tweet.uname}}</h4></a>
+              <p>{{tweet.datatime}}</p>
+          </div>
 
-        {% endfor %}
+          <div class="card-body">
 
-    </div>
 
+            <p class="card-text"><h5>{{tweet.text}}</h5></p>
+              {%if tweet.uname == user%}
+              <a href="{% url 'tweetupdate' tweet.id %}">
+                  <button class = "btn btn-outline-info">Editar</button>
+              </a>
+              <a href="{% url 'tweetdelete' tweet.id %}">
+                  <button class = "btn btn-outline-info">Borrar</button>
+              </a>
+
+              {% endif %}
+
+          </div>
+        </div>
+
+    {% endfor %}
+
+</div>
 
 {%endblock content%}

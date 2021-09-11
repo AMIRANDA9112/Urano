@@ -4,14 +4,16 @@
   <div class = 'container'>
     <div class = "col-sm-2">
       <div class = "media">
-        <img class="rounded-circle account-img img-fluid"
+        <img class="account-img"
              src="{{ user.profile.image.url }}"
-             alt = "Generic placeholder image">
+             alt = "Generic placeholder image"
+             width= "250"
+             height= "250">
       </div>
 
         <h3>{{user.username}}</h3>
 
-        <a href="{% url 'profileupdate' %}"><button class = " btn btn-outline-info">edit</button></a>
+        <a href="{% url 'profileupdate' %}"><button class = " btn btn-outline-info">Editar</button></a>
 
         <div class="card">
 
@@ -22,7 +24,12 @@
           </div>
         </div>
     </div>
-  </div>
+    <div>
+<a href="{% url 'pubprofile' %}"><button class = " btn btn-outline-info">Tus Publicaciones</button></a>
+</div>
+
+</div>
+
 
 
 {%endblock content%}

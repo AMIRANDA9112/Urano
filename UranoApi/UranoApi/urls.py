@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from accounts import views as acc_views
+
 from django.conf import settings
 from django.conf.urls.static import static
+from feed.models import Tweet
 
 
 urlpatterns = [
@@ -30,6 +32,7 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', acc_views.ActivateAccount.as_view(), name='activate'),
     path('profile/', acc_views.profile, name='profile'),
     path('profileupdate/', acc_views.profileupdate, name='profileupdate'),
+
 ]
 
 if settings.DEBUG:

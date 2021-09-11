@@ -2,9 +2,17 @@ from django.shortcuts import render
 from .models import Tweet
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
+
+
+class PubProfile(LoginRequiredMixin, ListView):
+    model = Tweet
+    template_name = 'feed/pubprofile.html'
+    ordering = ['-datatime']
 
 
 class TweetListView(LoginRequiredMixin, ListView):
+
     model = Tweet
     template_name = 'feed/home.html'
     ordering = ['-datatime']
@@ -13,7 +21,7 @@ class TweetListView(LoginRequiredMixin, ListView):
 class TweetCreateView(LoginRequiredMixin, CreateView):
     model = Tweet
     template_name = 'feed/create.html'
-    fields = ['text']
+    fields = ['text', 'img_tweet']
     success_url = '/'
 
     def form_valid(self, form):
@@ -23,7 +31,7 @@ class TweetCreateView(LoginRequiredMixin, CreateView):
 
 class TweetUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Tweet
-    fields = ['text']
+    fields = ['text', 'img_tweet']
     success_url = '/'
 
     def form_valid(self, form):
@@ -50,4 +58,3 @@ class TweetDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == tweet.uname:
             return True
         return True
-

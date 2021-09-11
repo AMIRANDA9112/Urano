@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
-from .forms import ProfileUpdateForm
+from .forms import ProfileUpdateForm, RegisterForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -8,14 +7,11 @@ from django.views.generic import View, UpdateView
 from django.contrib.auth.models import User
 from django.contrib.auth import views as auth_views
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
+from django.template.loader import render_to_string, get_template
 from .tokens import account_activation_token
-from django.utils.encoding import force_text
-from django.core.mail import send_mail
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
+from django.core.mail import EmailMultiAlternatives, send_mail
 from django.template import Context
 
 
@@ -35,7 +31,6 @@ class SignUpView(View):
             user = form.save(commit=False)
             user.is_active = False  # Deactivate account till it is confirmed
             user.save()
-            print(user)
 
             current_site = get_current_site(request)
 
@@ -88,6 +83,7 @@ def profile(request):
 def profileupdate(request):
     if request.method == 'POST':
         pform = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        print(pform)
 
         if pform.is_valid:
             pform.save()

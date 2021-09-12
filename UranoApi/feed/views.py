@@ -21,7 +21,7 @@ class TweetListView(LoginRequiredMixin, ListView):
 class TweetCreateView(LoginRequiredMixin, CreateView):
     model = Tweet
     template_name = 'feed/create.html'
-    fields = ['text', 'img_tweet']
+    fields = ['text']
     success_url = '/'
 
     def form_valid(self, form):
@@ -31,7 +31,7 @@ class TweetCreateView(LoginRequiredMixin, CreateView):
 
 class TweetUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Tweet
-    fields = ['text', 'img_tweet']
+    fields = ['text']
     success_url = '/'
 
     def form_valid(self, form):

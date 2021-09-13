@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.views.generic.base import TemplateView
 from .forms import ProfileUpdateForm, RegisterForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -48,7 +49,7 @@ class SignUpView(View):
 
             messages.success(request, 'Please Confirm your email to complete registration.')
 
-            return redirect('login')
+            return redirect('redirect')
 
         return render(request, self.template_name, {'form': form})
 
@@ -75,6 +76,10 @@ class ActivateAccount(View):
             return redirect('home')
 
 
+class Redirect(TemplateView):
+    template_name = 'Redirect.html'
+
+
 @login_required
 def profile(request):
     return render(request, 'accounts/profile.html')
@@ -83,12 +88,10 @@ def profile(request):
 def profileupdate(request):
     if request.method == 'POST':
         pform = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        print(pform)
 
         if pform.is_valid:
             pform.save()
             return redirect('profile')
-
     else:
         pform = ProfileUpdateForm(instance=request.user.profile)
 

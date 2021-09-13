@@ -1,35 +1,39 @@
 {% extends 'feed/base.html' %}
 {%block content%}
 
-  <div class = 'container'>
-    <div class = "col-sm-2">
-      <div class = "media">
-        <img class="account-img"
-             src="{{ user.profile.image.url }}"
-             alt = "Generic placeholder image"
-             width= "250"
-             height= "250">
+  <section class = "flex justify-center text-gray-100">
+    <div class = "">
+      <div class = "py-8">
+        <img class="rounded"
+                src="{{ user.profile.image.url }}"
+                alt = "Generic placeholder image"
+                width= "250"
+                height= "250">
       </div>
 
-        <h3>{{user.username}}</h3>
+      <h3 class="text-center text-4xl font-bold">{{user.username}}</h3>
 
-        <a href="{% url 'profileupdate' %}"><button class = " btn btn-outline-info">Editar</button></a>
+    </div>
 
-        <div class="card">
+  </section>
+  <article class="flex justify-center text-gray-100">
+    <div class="grid grid-cols-1 text-center space-y-6">
 
-          <div class="card-body">
+          <div class="max-w-md text-center py-8">
 
             {{user.profile.bio}}
 
           </div>
-        </div>
+
+            <a href="{% url 'profileupdate' %}"><button class = "text-center hover:bg-gray-500 bg-gray-800
+                               py-2 px-4 rounded">Editar</button></a>
+
+          <div class="">
+
+            <a href="{% url 'pubprofile' %}"><button class = "text-center hover:bg-gray-500 bg-gray-800
+                               py-2 px-4 rounded">Tus Publicaciones</button></a>
+          </div>
     </div>
-    <div>
-<a href="{% url 'pubprofile' %}"><button class = " btn btn-outline-info">Tus Publicaciones</button></a>
-</div>
-
-</div>
-
-
+  </article>
 
 {%endblock content%}

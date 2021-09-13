@@ -1,37 +1,51 @@
 {% extends  'feed/base.html'%}
 
 {%block content%}
-    <div>
         {%for tweet in object_list%}
 
         {%if tweet.uname == user%}
+        <article class = "flex justify-center bg-gray-900 text-gray-100">
+            <div class = "grid grid-cols-1">
+                <div class = "grid grid-cols-2 pt-8">
+                    <div class = "pr-8">
+                    <img class="rounded"
+                    src="{{ tweet.img.url }}"
+                    width= "50"
+                    height= "50">
+                    </div>
+                        <div class="text-right">
+                        <a class="transform hover:text-gray-600" href="#"><h4>{{tweet.uname}}</h4></a>
+                        <p class = "font-serif">{{tweet.datatime}}</p>
 
-            <div class="card">
-              <div class="card-header">
-                  <p>{{tweet.datatime}}</p>
-              </div>
+                        </div>
 
-              <div class="card-body">
+                </div>
 
-                <p class="card-text"><h5>{{tweet.text}}</h5></p>
+            <div class="grid grid-cols-1">
 
-                  <a href="{% url 'tweetupdate' tweet.id %}">
-                      <button class = "btn btn-outline-info">Editar</button>
-                  </a>
-                  <a href="{% url 'tweetdelete' tweet.id %}">
-                      <button class = "btn btn-outline-info">Borrar</button>
-                  </a>
+                <div class="grid grid-cols-1">
+                    <h5 class="text-lg">{{tweet.text}}</h5>
+                </div>
+
+                <div class="grid grid-cols-2">
+                    <a class="text-center" href="{% url 'tweetupdate' tweet.id %}">
+                        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
+                    </a>
+                    <a class="text-center" href="{% url 'tweetdelete' tweet.id %}">
+                        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
+                    </a>
+                </div>
 
 
-
-              </div>
+            </div>
             </div>
 
-        {% endif %}
+        </article>
 
-        {% endfor %}
+    {% endif %}
 
-    </div>
+    {% endfor %}
+
 
 
 {%endblock content%}

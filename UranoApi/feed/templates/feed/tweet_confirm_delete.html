@@ -2,30 +2,35 @@
 
 {% block content %}
 
-<div class = "container">
+<section class = "flex justify-center bg-gray-900 text-gray-100">
 
-  <form method = "POST">
-    {%csrf_token%}
+  <h1 class = "text-sm font-medium font-bold"> Confirm Delete</h1>
 
-    <fieldset class = "form-group">
-      <legend class = "border-bottom bm-4"> Confirm Delete</legend>
-    </fieldset>
+</section>
 
+<article class="flex justify-center bg-gray-900 text-gray-100 ">
 
+  <div class = "grid grid-cols-2 pt-8">
+    <div class = "px-8">
+      <form method = "POST">
+        {%csrf_token%}
+        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded" type = "submit">Delete</button>
 
-  <div class = "form-group">
-    <button class = "btn btn-outline-info" type = "submit">Delete</button>
+      </form>
+    </div>
+    <div class = "px-8">
+
+      <a  href="{% url 'home' %}">
+        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Cancel</button>
+      </a>
+
+    </div>
 
 
   </div>
 
-  </form>
+</article>
 
-  <a href="{% url 'home' %}">
-      <button class = "btn btn-outline-info">Cancel</button>
-    </a>
-
-</div>
 
 
 {% endblock content %}

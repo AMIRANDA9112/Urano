@@ -4,7 +4,7 @@
 
 <section class = "flex justify-center bg-gray-900 text-gray-100">
 
-  <h1 class = "text-sm font-medium font-bold"> Confirm Delete</h1>
+  <h1 class = "text-sm font-medium font-bold"> Confirma que quieres borrar esta Denuncia</h1>
 
 </section>
 
@@ -14,14 +14,14 @@
     <div class = "px-8">
       <form method = "POST">
         {%csrf_token%}
-        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded" type = "submit">Delete</button>
+        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded" type = "submit">Borrar</button>
 
       </form>
     </div>
     <div class = "px-8">
 
       <a  href="{% url 'home' %}">
-        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Cancel</button>
+        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Cancelar</button>
       </a>
 
     </div>

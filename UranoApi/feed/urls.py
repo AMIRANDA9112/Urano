@@ -1,11 +1,21 @@
 from . import views
 from django.urls import path
-from .views import TweetListView, TweetCreateView, TweetUpdateView, TweetDeleteView, PubProfile
+from .views import PublicationListView, PublicationCreateView, \
+    PublicationUpdateView, PublicationDeleteView, PubProfile,\
+    PublicationWCreateView, PublicationWUpdateView, PublicationWDeleteView, \
+    PublicationICreateView, PublicationIUpdateView, PublicationIDeleteView
 
 urlpatterns = [
-    path('', TweetListView.as_view(), name='home'),
-    path('create/', TweetCreateView.as_view(), name='tweetcreate'),
-    path('tweet/<int:pk>/update', TweetUpdateView.as_view(), name='tweetupdate'),
-    path('tweet/<int:pk>/delete', TweetDeleteView.as_view(), name='tweetdelete'),
+    path('', PublicationListView.as_view(), name='home'),
+    path('create/', PublicationCreateView.as_view(), name='publicationcreate'),
+    path('publication/<int:pk>/update', PublicationUpdateView.as_view(), name='publicationupdate'),
+    path('publication/<int:pk>/delete', PublicationDeleteView.as_view(), name='publicationdelete'),
     path('pubprofil/', PubProfile.as_view(), name='pubprofile'),
+    path('createw/', PublicationWCreateView.as_view(), name='publicationwcreate'),
+    path('publicationw/<int:pk>/update', PublicationWUpdateView.as_view(), name='publicationwupdate'),
+    path('publicationw/<int:pk>/delete', PublicationWDeleteView.as_view(), name='publicationwdelete'),
+    path('createi/', PublicationICreateView.as_view(), name='publicationicreate'),
+    path('publicationi/<int:pk>/update', PublicationIUpdateView.as_view(), name='publicationiupdate'),
+    path('publicationi/<int:pk>/delete', PublicationIDeleteView.as_view(), name='publicationidelete'),
+
 ]

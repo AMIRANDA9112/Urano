@@ -81,8 +81,17 @@ class Redirect(TemplateView):
 
 
 @login_required
-def profile(request):
-    return render(request, 'accounts/profile.html')
+def profile(request, username=None):
+
+    current_user = request.user
+    if username and username != current_user.username:
+        user = User.objects.get(username=username)
+        publications = user.publications.all()
+    else:
+        publications = current_user.publications.all()
+        user = current_user
+
+    return render(request, 'accounts/profile.html', {'user': user, 'publications': publications})
 
 
 def profileupdate(request):

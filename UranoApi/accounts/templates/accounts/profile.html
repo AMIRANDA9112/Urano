@@ -25,13 +25,15 @@
 
           </div>
 
+            {%if user == request.user%}
+
             <a href="{% url 'profileupdate' %}"><button class = "text-center hover:bg-gray-500 bg-gray-800
                                py-2 px-4 rounded">Editar</button></a>
-
+            {% endif %}
           <div class="">
 
             <a href="{% url 'pubprofile' %}"><button class = "text-center hover:bg-gray-500 bg-gray-800
-                               py-2 px-4 rounded">Tus Publicaciones</button></a>
+                               py-2 px-4 rounded">Publicaciones de la Cuenta</button></a>
           </div>
     </div>
   </article>

@@ -1,0 +1,36 @@
+{% extends 'feed/base.html' %}
+
+{% block content %}
+
+<section class = "flex justify-center bg-gray-900 text-gray-100">
+
+  <h1 class = "text-sm font-medium font-bold"> Confirmar Borrado de Publicación</h1>
+
+</section>
+
+<article class="flex justify-center bg-gray-900 text-gray-100 ">
+
+  <div class = "grid grid-cols-2 pt-8">
+    <div class = "px-8">
+      <form method = "POST">
+        {%csrf_token%}
+        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded" type = "submit">Borrado</button>
+
+      </form>
+    </div>
+    <div class = "px-8">
+
+      <a  href="{% url 'home' %}">
+        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Cancelar</button>
+      </a>
+
+    </div>
+
+
+  </div>
+
+</article>
+
+
+
+{% endblock content %}

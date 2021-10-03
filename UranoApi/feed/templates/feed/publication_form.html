@@ -1,0 +1,31 @@
+{%extends 'feed/base.html'%}
+
+{%block content%}
+
+    <section class = "bg-gray-900 text-gray-100">
+
+        <div class = "flex justify-center ">
+            <form method = "POST">
+
+                {%csrf_token%}
+                <p class = ""> Escribe Aqui</p>
+                <fieldset class = "text-gray-900">
+
+                    {{form.as_p}}
+
+                </fieldset>
+
+                <div class = "">
+                    <button class = "bg-gray-800 py-2 px-4 rounded"
+                            type = "submit">Actualizar Publicación</button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+    </section>
+
+{%endblock content%}

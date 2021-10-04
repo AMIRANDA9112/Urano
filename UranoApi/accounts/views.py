@@ -87,11 +87,18 @@ def profile(request, username=None):
     if username and username != current_user.username:
         user = User.objects.get(username=username)
         publications = user.publications.all()
+        publicationsw = user.publicationsw.all()
+        publicationsi = user.publicationsi.all()
     else:
+
         publications = current_user.publications.all()
+        publicationsw = current_user.publicationsw.all()
+        publicationsi = current_user.publicationsi.all()
         user = current_user
 
-    return render(request, 'accounts/profile.html', {'user': user, 'publications': publications})
+    return render(request, 'accounts/profile.html', {'user': user, 'publications': publications,
+                                                     'publicationsw': publicationsw,
+                                                     'publicationsi': publicationsi})
 
 
 def profileupdate(request):

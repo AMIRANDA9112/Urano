@@ -5,12 +5,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 
 
-class PubProfile(LoginRequiredMixin, ListView):
-    model = Publication
-    template_name = 'feed/pubprofile.html'
-    ordering = ['-datatime']
-
-
 class PublicationListView(LoginRequiredMixin, ListView):
     model = Publication
     template_name = 'feed/home.html'

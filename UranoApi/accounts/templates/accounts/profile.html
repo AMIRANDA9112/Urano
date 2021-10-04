@@ -28,14 +28,140 @@
             {%if user == request.user%}
 
             <a href="{% url 'profileupdate' %}"><button class = "text-center hover:bg-gray-500 bg-gray-800
-                               py-2 px-4 rounded">Editar</button></a>
+                               py-2 px-4 rounded">Editar Perfil</button></a>
             {% endif %}
-          <div class="">
 
-            <a href="{% url 'pubprofile' %}"><button class = "text-center hover:bg-gray-500 bg-gray-800
-                               py-2 px-4 rounded">Publicaciones de la Cuenta</button></a>
-          </div>
     </div>
   </article>
+
+ {%for publication in publications%}
+
+        <article class = "flex justify-center bg-gray-900 text-gray-100">
+            <div class = "grid grid-cols-1">
+                <div class = "grid grid-cols-2 pt-8">
+                    <div class = "pr-8">
+                        <img class="rounded"
+                        src="{{ publication.uname.profile.image.url }}"
+                        width= "50"
+                        height= "50">
+                    </div>
+                    <div class="text-right">
+                        <a class="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}"><h4>{{publication.uname}}</h4></a>
+                        <p class = "font-serif">{{publication.datatime}}</p>
+
+                    </div>
+
+                </div>
+
+            <div class="grid grid-cols-1">
+
+            <div class="grid grid-cols-1">
+            <h5 class="text-lg">{{publication.text}}</h5>
+            {%if publication.uname == request.user%}
+            </div>
+
+            <div class="grid grid-cols-2">
+                <a class="text-center" href="{% url 'publicationupdate' publication.id %}">
+                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
+                </a>
+                <a class="text-center" href="{% url 'publicationdelete' publication.id %}">
+                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
+                </a>
+            </div>
+
+            {% endif %}
+
+
+            </div>
+            </div>
+
+        </article>
+    {% endfor %}
+    {%for publicationw in publicationsw%}
+
+        <article class = "flex justify-center bg-gray-900 text-gray-100">
+            <div class = "grid grid-cols-1">
+                <div class = "grid grid-cols-2 pt-8">
+                    <div class = "pr-8">
+                        <img class="rounded"
+                        src="{{ publicationw.uname.profile.image.url }}"
+                        width= "50"
+                        height= "50">
+                    </div>
+                    <div class="text-right">
+                        <a class="transform hover:text-gray-600" href="{% url 'profile' publicationw.uname %}"><h4>{{publicationw.uname}}</h4></a>
+                        <p class = "font-serif">{{publicationw.datatime}}</p>
+
+                    </div>
+
+                </div>
+
+            <div class="grid grid-cols-1">
+
+            <div class="grid grid-cols-1">
+            <h5 class="text-lg">{{publicationw.text}}</h5>
+            {%if publicationw.uname == request.user%}
+            </div>
+
+            <div class="grid grid-cols-2">
+                <a class="text-center" href="{% url 'publicationwupdate' publicationw.id %}">
+                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
+                </a>
+                <a class="text-center" href="{% url 'publicationwdelete' publicationw.id %}">
+                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
+                </a>
+            </div>
+
+            {% endif %}
+
+
+            </div>
+            </div>
+
+        </article>
+    {% endfor %}
+    {%for publicationi in publicationsi%}
+
+        <article class = "flex justify-center bg-gray-900 text-gray-100">
+            <div class = "grid grid-cols-1">
+                <div class = "grid grid-cols-2 pt-8">
+                    <div class = "pr-8">
+                        <img class="rounded"
+                        src="{{ publicationi.uname.profile.image.url }}"
+                        width= "50"
+                        height= "50">
+                    </div>
+                    <div class="text-right">
+                        <a class="transform hover:text-gray-600" href="{% url 'profile' publicationi.uname %}"><h4>{{publicationi.uname}}</h4></a>
+                        <p class = "font-serif">{{publicationi.datatime}}</p>
+
+                    </div>
+
+                </div>
+
+            <div class="grid grid-cols-1">
+
+            <div class="grid grid-cols-1">
+            <h5 class="text-lg">{{publicationi.text}}</h5>
+            {%if publicationi.uname == request.user%}
+            </div>
+
+            <div class="grid grid-cols-2">
+                <a class="text-center" href="{% url 'publicationiupdate' publicationi.id %}">
+                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
+                </a>
+                <a class="text-center" href="{% url 'publicationidelete' publicationi.id %}">
+                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
+                </a>
+            </div>
+
+            {% endif %}
+
+
+            </div>
+            </div>
+
+        </article>
+    {% endfor %}
 
 {%endblock content%}

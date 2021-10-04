@@ -30,7 +30,6 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', acc_views.ActivateAccount.as_view(), name='activate'),
     path('profile/', acc_views.profile, name='profile'),
     path('profile/<str:username>/', acc_views.profile, name='profile'),
-
     path('profileupdate/', acc_views.profileupdate, name='profileupdate'),
     path('redirect/', acc_views.Redirect.as_view(template_name='accounts/redirect.html'), name='redirect'),
 

@@ -1,7 +1,7 @@
 from . import views
 from django.urls import path
 from .views import PublicationListView, PublicationCreateView, \
-    PublicationUpdateView, PublicationDeleteView, PubProfile,\
+    PublicationUpdateView, PublicationDeleteView,\
     PublicationWCreateView, PublicationWUpdateView, PublicationWDeleteView, \
     PublicationICreateView, PublicationIUpdateView, PublicationIDeleteView
 
@@ -10,7 +10,6 @@ urlpatterns = [
     path('create/', PublicationCreateView.as_view(), name='publicationcreate'),
     path('publication/<int:pk>/update', PublicationUpdateView.as_view(), name='publicationupdate'),
     path('publication/<int:pk>/delete', PublicationDeleteView.as_view(), name='publicationdelete'),
-    path('pubprofil/', PubProfile.as_view(), name='pubprofile'),
     path('createw/', PublicationWCreateView.as_view(), name='publicationwcreate'),
     path('publicationw/<int:pk>/update', PublicationWUpdateView.as_view(), name='publicationwupdate'),
     path('publicationw/<int:pk>/delete', PublicationWDeleteView.as_view(), name='publicationwdelete'),

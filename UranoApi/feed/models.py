@@ -6,49 +6,35 @@ from django.core.validators import FileExtensionValidator
 
 # Create your models here.
 
+
 class Publication(models.Model):
-    text = models.TextField(max_length=280, default='')
+    text = models.TextField(default='')
     datatime = models.DateTimeField(default=timezone.now)
     uname = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publications')
-
-
-class ImgPublication(models.Model):
-    puname = models.ForeignKey(Publication,
-                               on_delete=models.CASCADE,
-                               related_name='img_publications',
-                               null=True,
-                               blank=True)
-    img = models.ImageField(default='default.jpg',
-                            upload_to='profile',
+    img = models.ImageField(upload_to='profile',
                             null=True,
                             blank=True)
 
+    img2 = models.ImageField(upload_to='profile/%Y',
+                             null=True,
+                             blank=True)
 
-class VideoPublication(models.Model):
-    puname = models.ForeignKey(Publication,
-                               on_delete=models.CASCADE,
-                               related_name='video_publications',
-                               null=True,
-                               blank=True)
     video = models.FileField(null=True,
                              blank=True,
+                             upload_to='profile/%Y',
                              validators=[FileExtensionValidator(['mp4'])])
 
-
-class PdfPublication(models.Model):
-    puname = models.ForeignKey(Publication,
-                               on_delete=models.CASCADE,
-                               related_name='pdf_publications',
-                               null=True, blank=True)
     pdf = models.FileField(null=True,
                            blank=True,
+                           upload_to='profile/%Y',
                            validators=[FileExtensionValidator(['pdf'])])
 
 
 class PublicationW(models.Model):
-    text = models.TextField(max_length=280, default='')
-    datatime = models.DateTimeField(default=timezone.now)
     uname = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publicationsw')
+    case_id = models.CharField(max_length=80, default='')
+    datatime = models.DateTimeField(default=timezone.now)
+    description = models.TextField(default='')
     img = models.ImageField(default=User, upload_to='profile', null=True, blank=True)
 
 

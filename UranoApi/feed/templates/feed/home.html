@@ -5,7 +5,7 @@
         <section class = "flex justify-center bg-gray-900 text-gray-200">
             <div class="">
 
-                <div class="text-center py-8">
+                <div class="text-center py-8 ">
                     <h1 class="">Hola {{user.username}}</h1>
                 </div>
 
@@ -21,12 +21,12 @@
         </section>
 
 
-    {%for publication in object_list%}
+        {%for publication in object_list%}
 
-        <article class = "flex justify-center bg-gray-900 text-gray-100">
-            <div class = "grid grid-cols-1">
-                <div class = "grid grid-cols-2 pt-8">
-                    <div class = "pr-8">
+        <article class = "flex justify-center bg-gray-900 text-gray-100 my-8 ">
+            <div class = "grid grid-cols-1 w-2/5 shadow">
+                <div class = "grid grid-cols-2 pt-8 py-8">
+                    <div class = "pr-8 ">
                         <img class="rounded"
                         src="{{ publication.uname.profile.image.url }}"
                         width= "50"
@@ -43,11 +43,52 @@
             <div class="grid grid-cols-1">
 
             <div class="grid grid-cols-1">
-            <h5 class="text-lg">{{publication.text}}</h5>
-            {%if publication.uname == user%}
+
+            <p class="text-left break-words">{{publication.text}}</p>
+
             </div>
 
-            <div class="grid grid-cols-2">
+            {% if publication.img %}
+             <div class="grid grid-cols-1">
+
+            <img       src="{{ publication.img.url }}"
+                        width="640"
+                        height="264">
+            </div>
+            {% endif %}
+            {% if publication.img2 %}
+             <div class="grid grid-cols-1">
+
+            <img       src="{{ publication.img2.url }}"
+                        width="640"
+                        height="264">
+            </div>
+            {% endif %}
+
+            {% if publication.video %}
+
+            <div class="grid grid-cols-1">
+
+                  <video
+                    id="my-video"
+                    class="video-js"
+                    controls
+                    preload="auto"
+                    width="640"
+                    height="264"
+                    data-setup="{}"
+                  >
+                    <source src="{{ publication.video.url }}" />
+
+                  </video>
+            </div>
+
+            {% endif %}
+
+
+            {%if publication.uname == user%}
+
+            <div class="grid mt-8 grid-cols-2 py-8">
                 <a class="text-center" href="{% url 'publicationupdate' publication.id %}">
                     <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
                 </a>
@@ -56,6 +97,11 @@
                 </a>
             </div>
 
+
+
+
+
+
             {% endif %}
 
 
@@ -63,7 +109,7 @@
             </div>
 
         </article>
-    {% endfor %}
+        {% endfor %}
 
     {% for publication in publicationw %}
 

@@ -1,26 +1,27 @@
 {%extends 'feed/base.html'%}
 
+
 {%block content%}
+
+
 
     <section class = "bg-gray-900 text-gray-100">
 
         <div class = "flex justify-center ">
-            <form method = "POST">
+            <form method="post" enctype="multipart/form-data">
 
-                {%csrf_token%}
-                <p class = ""> Escribe Aqui</p>
-                <fieldset class = "text-gray-900">
+                {% csrf_token %}
 
-                    {{form.as_p}}
+            <label>Que deseas Publicar</label>
 
-                </fieldset>
+            <div class = text-gray-900>
+                {{ form.as_p }}
+            </div>
 
-                <div class = "">
-                    <button class = "bg-gray-800 py-2 px-4 rounded"
-                            type = "submit">Actualizar Publicación</button>
 
-                </div>
 
+            <button class = "hover:bg-gray-700 bg-gray-900
+                                                    py-2 px-4 rounded" type = "submit">Actualizar</button>
             </form>
 
         </div>

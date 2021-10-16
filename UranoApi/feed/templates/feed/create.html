@@ -1,68 +1,27 @@
 {%extends 'feed/base.html'%}
 
+
 {%block content%}
 
-    <script type="text/javascript">
-        $(function() {
-            $(".inline.{{ img_form.prefix }}").formset({
-                prefix: "{{ img_form.prefix }}",
-            })
-            $(".inline.{{ video_form.prefix }}").formset({
-                prefix: "{{ video_form.prefix }}",
-            })
-            $(".inline.{{ pdf_form.prefix }}").formset({
-                prefix: "{{ pdf_form.prefix }}",
-            })
-        })
-    </script>
+
 
     <section class = "bg-gray-900 text-gray-100">
 
         <div class = "flex justify-center ">
-            <form method = "POST">
+            <form method="post" enctype="multipart/form-data">
 
                 {% csrf_token %}
+
+            <label>Que deseas Publicar</label>
+
             <div class = text-gray-900>
                 {{ form.as_p }}
             </div>
-            <fieldset>
-                <legend>Sube una Imagen</legend>
-                {{ img_form.management_form }}
-                {{ img_form.non_form_errors }}
-                {% for form in img_form %}
-                    {{ form.id }}
-                    <div class="inline {{ img_form.prefix }}">
-                        {{ form.img.errors }}
-                        {{ form.img }}
-                    </div>
-                {% endfor %}
-            </fieldset>
-             <fieldset>
-                <legend>Sube una video</legend>
-                {{ video_form.management_form }}
-                {{ video_form.non_form_errors }}
-                {% for form in video_form %}
-                    {{ form.id }}
-                    <div class="inline {{ video_form.prefix }}">
-                        {{ form.video.errors }}
-                        {{ form.video }}
-                    </div>
-                {% endfor %}
-            </fieldset>
-            <fieldset>
-                <legend>Sube una Documento Pdf</legend>
-                {{ pdf_form.management_form }}
-                {{ pdf_form.non_form_errors }}
-                {% for form in pdf_form %}
-                    {{ form.id }}
-                    <div class="inline {{ pdf_form.prefix }}">
-                        {{ form.pdf.errors }}
-                        {{ form.pdf }}
-                    </div>
-                {% endfor %}
-            </fieldset>
+
+
+
             <button class = "hover:bg-gray-700 bg-gray-900
-                                                    py-2 px-4 rounded" type = "submit">Publicar</button>
+                                                    py-2 px-4 rounded" type = "submit">Actualizar</button>
             </form>
 
         </div>

@@ -9,10 +9,13 @@
                     <h1 class="">Hola {{user.username}}</h1>
                 </div>
 
-                <div class="flex justify-center ">
+                <div class="grid grid-cols-2 flex justify-center ">
 
                     <a class="text-center" href="{%url 'publicationcreate'%}">
                         <button class = "hover:bg-gray-700 py-2 px-4 rounded">Escribir Publicacion</button>
+                    </a>
+                    <a class="text-center" href="{%url 'publicationwcreate'%}">
+                        <button class = "hover:bg-gray-700 py-2 px-4 rounded">Escribir Advertencia</button>
                     </a>
                 </div>
 
@@ -21,7 +24,7 @@
         </section>
 
 
-        {%for publication in object_list%}
+        {%for publication in publicationt%}
 
         <article class = "flex justify-center bg-gray-900 text-gray-100 my-8 ">
             <div class = "grid grid-cols-1 w-2/5 shadow">
@@ -83,7 +86,21 @@
                   </video>
             </div>
 
+
+
             {% endif %}
+
+
+                <div class="font-serif text-gray-100 ">
+
+                    {% for tag in publication.tags.all %}
+
+                    <a href="{% url 'publicationtags' tag.slug %}" class = ""> {{tag.name}}</a>
+
+
+                    {% endfor %}
+                </div>
+
 
 
             {%if publication.uname == user%}
@@ -96,12 +113,6 @@
                     <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
                 </a>
             </div>
-
-
-
-
-
-
             {% endif %}
 
 
@@ -111,42 +122,135 @@
         </article>
         {% endfor %}
 
-    {% for publication in publicationw %}
+    {% for publication, map in publicationw %}
 
-        <article class = "flex justify-center bg-gray-900 text-gray-100">
-            <div class = "grid grid-cols-1">
-                <div class = "grid grid-cols-2 pt-8">
-                    <div class = "pr-8">
+        <article class = "flex justify-center bg-gray-900 text-gray-100 my-8 ">
+            <div class = "grid grid-cols-1 w-2/5 shadow">
+                <div class = "grid grid-cols-2 pt-8 py-8">
+                    <div class = "pr-8 ">
                         <img class="rounded"
                         src="{{ publication.uname.profile.image.url }}"
                         width= "50"
                         height= "50">
                     </div>
-                <div class="text-right">
-                    <a class="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}"><h4>{{publication.uname}}</h4></a>
-                    <p class = "font-serif">{{publication.datatime}}</p>
+                    <div class="text-right">
+                        <a class="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}"><h4>{{publication.uname}}</h4></a>
+                        <p class = "font-serif">{{publication.datatime}}</p>
 
-                </div>
+                    </div>
 
                 </div>
 
             <div class="grid grid-cols-1">
 
-            <div class="grid grid-cols-1">
-                <h5 class="text-lg">{{publication.text}}</h5>
-                {%if publication.uname == user%}
-                </div>
+            <h1 class="text-left break-words">{{publication.case_id}}</h1>
 
-                <div class="grid grid-cols-2">
-                    <a class="text-center" href="{% url 'publicationwupdate' publication.id %}">
-                        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
-                    </a>
-                    <a class="text-center" href="{% url 'publicationwdelete' publication.id %}">
-                        <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
-                    </a>
-                </div>
+            <div class="grid grid-cols-1">
+
+            <p class="text-left break-words">{{publication.description}}</p>
+
+            </div>
+
+                 Involucrados:
+
+            <div class="grid grid-cols-8">
+
+
+
+                {% for tag in publication.involved.all %}
+
+            <a href="{% url 'publicationtags' tag.slug %}" class = ""> {{tag.name}}</a>
+
+                {% endfor %}
+            </div>
+
+            <div class="grid grid-cols-8">
+
+
+
+
+            <p class="text-left break-words">Ubicación: {{publication.address}}</p>
+
+            </div>
+
+
+                <div class="">
+
+
+
+
+            {{map|safe}}
+
+
+            </div>
+
+
+
+            {% if publication.img %}
+             <div class="grid grid-cols-1">
+
+            <img       src="{{ publication.img.url }}"
+                        width="640"
+                        height="264">
+            </div>
+            {% endif %}
+            {% if publication.img2 %}
+             <div class="grid grid-cols-1">
+
+            <img       src="{{ publication.img2.url }}"
+                        width="640"
+                        height="264">
+            </div>
+            {% endif %}
+
+            {% if publication.video %}
+
+            <div class="grid grid-cols-1">
+
+                  <video
+                    id="my-videow"
+                    class="video-js"
+                    controls
+                    preload="auto"
+                    width="640"
+                    height="264"
+                    data-setup="{}"
+                  >
+                    <source src="{{ publication.video.url }}" />
+
+                  </video>
+            </div>
+
+
 
             {% endif %}
+
+
+                <div class="font-serif text-gray-100 ">
+
+                    {% for tag in publication.tags.all %}
+
+                    <a href="{% url 'publicationtags' tag.slug %}" class = ""> {{tag.name}}</a>
+
+
+                    {% endfor %}
+                </div>
+
+
+
+            {%if publication.uname == user%}
+
+            <div class="grid mt-8 grid-cols-2 py-8">
+                <a class="text-center" href="{% url 'publicationwupdate' publication.id %}">
+                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
+                </a>
+                <a class="text-center" href="{% url 'publicationwdelete' publication.id %}">
+                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
+                </a>
+            </div>
+            {% endif %}
+
+
             </div>
             </div>
 
@@ -169,6 +273,7 @@
                     <p class = "font-serif">{{publication.datatime}}</p>
 
                 </div>
+
 
                 </div>
 

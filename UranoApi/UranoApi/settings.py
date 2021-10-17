@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'feed.apps.FeedConfig',
     'accounts.apps.AccountsConfig',
+    'taggit',
 
 
 ]
@@ -138,6 +139,7 @@ LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+GOOGLE_API_KEY = 'AIzaSyCddETINrTEJsfozSY_TQv8ov1wNOz9y8I'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

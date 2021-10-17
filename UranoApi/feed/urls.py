@@ -3,10 +3,11 @@ from django.urls import path
 from .views import PublicationListView, PublicationCreateView, \
     PublicationUpdateView, PublicationDeleteView,\
     PublicationWCreateView, PublicationWUpdateView, PublicationWDeleteView, \
-    PublicationICreateView, PublicationIUpdateView, PublicationIDeleteView
+    PublicationICreateView, PublicationIUpdateView, PublicationIDeleteView, PublicationTagsView
 
 urlpatterns = [
     path('', PublicationListView.as_view(), name='home'),
+    path('tags/<slug:tag_slug>/', PublicationTagsView.as_view(), name='publicationtags'),
     path('create/', PublicationCreateView.as_view(), name='publicationcreate'),
     path('publication/<int:pk>/update', PublicationUpdateView.as_view(), name='publicationupdate'),
     path('publication/<int:pk>/delete', PublicationDeleteView.as_view(), name='publicationdelete'),

@@ -1,11 +1,20 @@
 from django.shortcuts import render
 from .models import Publication, PublicationW, PublicationI
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse
+from .forms import PublicationForm, PublicationWForm, PublicationIForm
 from taggit.models import Tag
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
+from django.conf.urls.static import static
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+from pdf2image import convert_from_path, convert_from_bytes
+from PIL import Image
+from io import BytesIO
+import os
+from django.urls import reverse
 import folium
 import geocoder
 
@@ -37,8 +46,6 @@ class PublicationListView(LoginRequiredMixin, ListView):
         warningmaps = []
 
         for publications in PublicationW.objects.all():
-
-
             WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
 
             folium.Marker([publications.lat, publications.lon], tooltip='Click for more',
@@ -48,6 +55,7 @@ class PublicationListView(LoginRequiredMixin, ListView):
             warningmaps.append(WarningMaps._repr_html_())
 
         warningmaps = zip(PublicationW.objects.all(), warningmaps)
+
         context['publicationt'] = Publication.objects.all()
         context['publicationw'] = warningmaps
 
@@ -72,22 +80,86 @@ class PublicationTagsView(LoginRequiredMixin, ListView):
         return context
 
 
+class AddLike(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        publication = Publication.objects.get(pk=pk)
+
+        is_dislike = False
+        for dislike in publication.dislikes.all():
+            if dislike == request.user:
+                is_dislike = True
+                break
+
+        if is_dislike:
+            publication.dislikes.remove(request.user)
+
+        is_like = False
+        for like in publication.likes.all():
+            if like == request.user:
+                is_like = True
+                break
+
+        if not is_like:
+            publication.likes.add(request.user)
+
+        if is_like:
+            publication.likes.remove(request.user)
+
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
+class AddDisLike(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+
+        publication = Publication.objects.get(pk=pk)
+
+        is_like = False
+        for like in publication.likes.all():
+            if like == request.user:
+                is_like = True
+                break
+
+        if is_like:
+            publication.likes.remove(request.user)
+
+        is_dislike = False
+        for dislike in publication.dislikes.all():
+            if dislike == request.user:
+                is_dislike = True
+                break
+
+        if not is_dislike:
+            publication.dislikes.add(request.user)
+
+        if is_dislike:
+            publication.dislikes.remove(request.user)
+
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
 class PublicationCreateView(LoginRequiredMixin, CreateView):
     model = Publication
     template_name = 'feed/create.html'
-    fields = ['text', 'img', 'img2', 'video', 'pdf']
+
     success_url = '/'
+    form_class = PublicationForm
 
     def form_valid(self, form):
+
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
         form.instance.uname = self.request.user
+
         self.object = form.save()
 
         self.listtag = hastag(self.object.text)
 
         for self.tag in self.listtag:
             self.object.tags.add(self.tag)
-
-        print(self.object.tags)
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -101,13 +173,14 @@ class PublicationCreateView(LoginRequiredMixin, CreateView):
 class PublicationUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Publication
     template_name = 'feed/publication_form.html'
-    fields = ['text', 'img', 'img2', 'video', 'pdf']
+    form_class = PublicationForm
     success_url = '/'
 
     def form_valid(self, form):
         form.instance.uname = self.request.user
         self.object = form.save()
-
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
         self.listtag = hastag(self.object.text)
 
         for self.tag in self.listtag:
@@ -142,18 +215,14 @@ class PublicationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
 class PublicationWCreateView(LoginRequiredMixin, CreateView):
     model = PublicationW
     template_name = 'feed/createw.html'
-    fields = ['case_id', 'description', 'involved', 'address', 'img', 'img2', 'video', 'pdf']
+
     success_url = '/'
+    form_class = PublicationWForm
 
     def form_valid(self, form):
         form.instance.uname = self.request.user
         self.object = form.save()
-
-
         self.location = geocoder.arcgis(self.object.address)
-
-
-
         if self.location.lat == None or self.location.lng == None:
             return HttpResponse('You address input is invalid')
 
@@ -187,17 +256,33 @@ class PublicationWCreateView(LoginRequiredMixin, CreateView):
 class PublicationWUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = PublicationW
     template_name = 'feed/publicationw_form.html'
-    fields = ['case_id', 'description', 'involved', 'address', 'img', 'img2', 'video', 'pdf']
+    form_class = PublicationWForm
     success_url = '/'
 
     def form_valid(self, form):
         form.instance.uname = self.request.user
         self.object = form.save()
+        self.location = geocoder.arcgis(self.object.address)
+        if self.location.lat == None or self.location.lng == None:
+            return HttpResponse('You address input is invalid')
+
+        print('aquie es ', self.location)
+
+        self.object.lat = self.location.lat
+        self.object.lon = self.location.lng
+        self.object.country = self.location.country
+
+        print(self.object.lat)
+        print(self.location)
 
         self.listtag = hastag(self.object.description)
 
         for self.tag in self.listtag:
             self.object.involved.add(self.tag)
+
+        print(self.object.involved)
+
+        self.object.save()
 
         return HttpResponseRedirect(self.get_success_url())
 

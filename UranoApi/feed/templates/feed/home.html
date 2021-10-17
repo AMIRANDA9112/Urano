@@ -68,6 +68,8 @@
             </div>
             {% endif %}
 
+
+
             {% if publication.video %}
 
             <div class="grid grid-cols-1">
@@ -86,22 +88,26 @@
                   </video>
             </div>
 
-
-
             {% endif %}
 
+                {% if publication.pdf %}
+
+                <div class="">
+
+
+                <a href="{{publication.pdf.url}}" Descargar>Documento con Evidencia Adjunta</a></h1>
+
+                 </div>
+
+            {% endif %}
 
                 <div class="font-serif text-gray-100 ">
 
                     {% for tag in publication.tags.all %}
 
                     <a href="{% url 'publicationtags' tag.slug %}" class = ""> {{tag.name}}</a>
-
-
                     {% endfor %}
                 </div>
-
-
 
             {%if publication.uname == user%}
 
@@ -117,6 +123,52 @@
 
 
             </div>
+
+                {% if not publication.uname == request.user %}
+                <div class="grid mt-8 grid-cols-2 py-2 text-gray-100">
+
+
+
+                    <div class="">
+
+
+                        <span>{{publication.likes.all.count}}</span>
+
+                        <form method="POST" action="{% url 'like' publication.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value={{request.path}}>
+                            <button type="submit">like</button>
+
+                        </form>
+
+
+                    </div>
+
+                    <div class="">
+
+
+                        <span>{{publication.dislikes.all.count}}</span>
+
+                        <form method="POST" action="{% url 'dislike' publication.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value={{request.path}}>
+                            <button type="submit">dislike</button>
+
+                        </form>
+
+
+                    </div>
+
+
+
+                </div>
+
+                {% endif %}
+
+
+
+                </div>
+
             </div>
 
         </article>

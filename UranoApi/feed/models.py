@@ -54,8 +54,6 @@ class PublicationW(models.Model):
                             blank=True)
     lon = models.FloatField(default=0, null=True,
                             blank=True)
-
-    country = models.CharField(default='Colombia', max_length=80, null=True, blank=True)
     slug = models.SlugField(unique=True, max_length=100, null=True,
                             blank=True)
     img = models.ImageField(upload_to='profile',
@@ -75,6 +73,9 @@ class PublicationW(models.Model):
                            blank=True,
                            upload_to='profile/%Y',
                            validators=[FileExtensionValidator(['pdf'])])
+
+    likes = models.ManyToManyField(User, blank=True, related_name='likesw')
+    dislikes = models.ManyToManyField(User, blank=True, related_name='dislikesw')
 
 
 class PublicationI(models.Model):

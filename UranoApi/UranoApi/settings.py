@@ -119,6 +119,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+DATETIME_FORMAT = "%Y-%m-%d%H:%M:%S"
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -132,9 +134,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_REDIRECT_URL = 'home'
 
 LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+
+
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

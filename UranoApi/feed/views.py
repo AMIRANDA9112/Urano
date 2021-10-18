@@ -1,22 +1,21 @@
 from django.shortcuts import render
 from .models import Publication, PublicationW, PublicationI
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse
 from .forms import PublicationForm, PublicationWForm, PublicationIForm
-from taggit.models import Tag
+from taggit.models import Tag, slugify
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.conf.urls.static import static
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from pdf2image import convert_from_path, convert_from_bytes
-from PIL import Image
-from io import BytesIO
 import os
 from django.urls import reverse
+import pandas as pd
 import folium
 import geocoder
+
 
 from django.http import HttpResponseRedirect
 
@@ -33,10 +32,38 @@ def hastag(text):
     return hashtag_list
 
 
+class PublicationDetail(LoginRequiredMixin, DetailView):
+    model = Publication
+    template_name = 'feed/publication_detail.html'
+
+
+class PublicationWDetail(LoginRequiredMixin, DetailView):
+    model = PublicationW
+    template_name = 'feed/publicationw_detail.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+
+        publications = context['publicationw']
+        WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
+
+        toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+
+        folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
+                      popup=publications.description).add_to(WarningMaps)
+        # Get HTML Representation of Map Object
+        warningmaps = WarningMaps._repr_html_()
+        context['map'] = warningmaps
+
+        return context
+
+
 class PublicationListView(LoginRequiredMixin, ListView):
     model = Publication
     template_name = 'feed/home.html'
-    ordering = ['-datatime']
+    ordering = ['datatime']
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -48,8 +75,10 @@ class PublicationListView(LoginRequiredMixin, ListView):
         for publications in PublicationW.objects.all():
             WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
 
-            folium.Marker([publications.lat, publications.lon], tooltip='Click for more',
-                          popup=publications.country).add_to(WarningMaps)
+            toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+
+            folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
+                          popup=publications.description).add_to(WarningMaps)
             # Get HTML Representation of Map Object
 
             warningmaps.append(WarningMaps._repr_html_())
@@ -58,8 +87,8 @@ class PublicationListView(LoginRequiredMixin, ListView):
 
         context['publicationt'] = Publication.objects.all()
         context['publicationw'] = warningmaps
-
         context['publicationi'] = PublicationI.objects.all()
+
         return context
 
 
@@ -67,14 +96,27 @@ class PublicationTagsView(LoginRequiredMixin, ListView):
     model = Publication
     template_name = 'feed/home.html'
 
-    ordering = ['-datatime']
+    ordering = ['datatime']
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
+        warningmaps = []
+
+        for publications in PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug')):
+            WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
+
+            toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+
+            folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
+                          popup=publications.description).add_to(WarningMaps)
+            # Get HTML Representation of Map Object
+
+            warningmaps.append(WarningMaps._repr_html_())
+
+        warningmaps = zip(PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug')), warningmaps)
         context['publicationt'] = Publication.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
-        context['publicationw'] = PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug'))
+        context['publicationw'] = warningmaps
         context['publicationi'] = PublicationI.objects.all
 
         return context
@@ -114,6 +156,67 @@ class AddDisLike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
 
         publication = Publication.objects.get(pk=pk)
+
+        is_like = False
+        for like in publication.likes.all():
+            if like == request.user:
+                is_like = True
+                break
+
+        if is_like:
+            publication.likes.remove(request.user)
+
+        is_dislike = False
+        for dislike in publication.dislikes.all():
+            if dislike == request.user:
+                is_dislike = True
+                break
+
+        if not is_dislike:
+            publication.dislikes.add(request.user)
+
+        if is_dislike:
+            publication.dislikes.remove(request.user)
+
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
+class AddLikeW(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        publication = PublicationW.objects.get(pk=pk)
+
+        is_dislike = False
+        for dislike in publication.dislikes.all():
+            if dislike == request.user:
+                is_dislike = True
+                break
+
+        if is_dislike:
+            publication.dislikes.remove(request.user)
+
+        is_like = False
+        for like in publication.likes.all():
+            if like == request.user:
+                is_like = True
+                break
+
+        if not is_like:
+            publication.likes.add(request.user)
+
+        if is_like:
+            publication.likes.remove(request.user)
+
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
+class AddDisLikeW(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+
+        publication = PublicationW.objects.get(pk=pk)
 
         is_like = False
         for like in publication.likes.all():
@@ -230,7 +333,6 @@ class PublicationWCreateView(LoginRequiredMixin, CreateView):
 
         self.object.lat = self.location.lat
         self.object.lon = self.location.lng
-        self.object.country = self.location.country
 
         print(self.object.lat)
         print(self.location)

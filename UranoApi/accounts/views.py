@@ -14,6 +14,8 @@ from django.template.loader import render_to_string, get_template
 from .tokens import account_activation_token
 from django.core.mail import EmailMultiAlternatives, send_mail
 from django.template import Context
+import folium
+from taggit.models import slugify
 
 
 # Create your views here.
@@ -86,18 +88,34 @@ def profile(request, username=None):
     current_user = request.user
     if username and username != current_user.username:
         user = User.objects.get(username=username)
-        publications = user.publications.all()
+        publicationst = user.publications.all()
         publicationsw = user.publicationsw.all()
         publicationsi = user.publicationsi.all()
     else:
 
-        publications = current_user.publications.all()
+        publicationst = current_user.publications.all()
         publicationsw = current_user.publicationsw.all()
         publicationsi = current_user.publicationsi.all()
         user = current_user
 
-    return render(request, 'accounts/profile.html', {'user': user, 'publications': publications,
-                                                     'publicationsw': publicationsw,
+    warningmaps = []
+
+    for publications in publicationsw:
+        WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
+
+        toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+
+        folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
+                      popup=publications.description).add_to(WarningMaps)
+        # Get HTML Representation of Map Object
+
+        warningmaps.append(WarningMaps._repr_html_())
+
+    warningmaps = zip(publicationsw, warningmaps)
+
+    return render(request, 'accounts/profile.html', {'user': user,
+                                                     'publications': publicationst,
+                                                     'publicationsw': warningmaps,
                                                      'publicationsi': publicationsi})
 
 

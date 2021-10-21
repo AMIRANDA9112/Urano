@@ -32,6 +32,8 @@ urlpatterns = [
     path('profile/<str:username>/', acc_views.profile, name='profile'),
     path('profileupdate/', acc_views.profileupdate, name='profileupdate'),
     path('redirect/', acc_views.Redirect.as_view(template_name='accounts/redirect.html'), name='redirect'),
+    path('', include('social_django.urls', namespace='social')),
+
 
 ]
 

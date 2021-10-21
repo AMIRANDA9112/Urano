@@ -9,3 +9,9 @@ django-taggit
 geocoder
 folium
 Pillow
+ oauthlib
+ requests-oauthlib
+ python3-openid
+ PyJWT
+ social-auth-core
+ social-auth-app-django

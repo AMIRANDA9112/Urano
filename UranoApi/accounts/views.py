@@ -14,6 +14,10 @@ from django.template.loader import render_to_string, get_template
 from .tokens import account_activation_token
 from django.core.mail import EmailMultiAlternatives, send_mail
 from django.template import Context
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AdminPasswordChangeForm, PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from social_django.models import UserSocialAuth
 import folium
 from taggit.models import slugify
 
@@ -103,7 +107,7 @@ def profile(request, username=None):
     for publications in publicationsw:
         WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
 
-        toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+        toolmark = "ALERTA" + "\n" + str(str(slugify(publications.datatime))[:10] + "\n" + publications.case_id)
 
         folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
                       popup=publications.description).add_to(WarningMaps)
@@ -130,3 +134,5 @@ def profileupdate(request):
         pform = ProfileUpdateForm(instance=request.user.profile)
 
     return render(request, 'accounts/profileupdate.html', {'pform': pform})
+
+

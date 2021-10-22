@@ -5,16 +5,18 @@
 
 
 
-    <section class = "bg-gray-900 text-gray-100">
+    <section class = "bg-gray-900 text-gray-100 ">
 
-        <div class = "flex justify-center ">
+        <div class = "grid grid-cols-1justify-items-center ">
+
+        <div class = "md:w-2/5 w-full justify-self-center ">
             <form method="post" enctype="multipart/form-data">
 
                 {% csrf_token %}
 
-            <label>Que deseas Publicar</label>
+            <label>Publicar Alerta</label>
 
-            <div class = text-gray-900>
+            <div class="py-8 px-8 bg-gray-500 text-gray-900 space-y-4 break-words rounded" >
                 {{ form.as_p }}
             </div>
 
@@ -25,7 +27,7 @@
             </form>
 
         </div>
-
+        </div>
 
     </section>
 

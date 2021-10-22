@@ -7,14 +7,16 @@
 
     <section class = "bg-gray-900 text-gray-100">
 
-        <div class = "flex justify-center ">
+        <div class = "grid grid-cols-1justify-items-center ">
+
+        <div class = "md:w-2/5 w-full justify-center justify-self-center">
             <form method="post" enctype="multipart/form-data">
 
                 {% csrf_token %}
 
             <label>Que deseas Publicar</label>
 
-            <div class = text-gray-900>
+            <div class="bg-gray-500 text-gray-900 space-y-4 justify-center">
                 {{ form.as_p }}
             </div>
 
@@ -26,7 +28,7 @@
 
         </div>
 
-
+             </div>
     </section>
 
 {%endblock content%}

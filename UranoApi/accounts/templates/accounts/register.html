@@ -12,17 +12,25 @@
     </head>
     <body class="bg-gray-900">
         <section class="text-gray-100">
-            <div class = "grid grid-cols-1">
+            <div class = "justify-center grid grid-cols-1">
                 <div class = "flex justify-center py-8 px-8">
                     <img class="w-1/1"
                     src="https://i.ibb.co/KLkkh7J/letters.png">
 
                 </div>
-                <div class = "">
+                <div class = "md:w-2/5 w-full  justify-self-center">
                     <form method = "POST">
                         {%csrf_token%}
-                        <div class = "py-8 px-8 bg-gray-500 text-gray-900">
-                            {{form.as_p}}
+                        <div class = "py-8 px-8 text-gray-100 space-y-4 break-words rounded">
+                            {% for field in form %}
+                            <div class="my-2">
+                                {{ field.errors }}
+                                {{ field }}
+                                {% if field.help_text %}
+                                <p class="help text-blue-200">{{ field.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
                         </div>
                         <div class = "flex justify-center">
                             <button class = "hover:bg-gray-700 bg-gray-900
@@ -30,7 +38,7 @@
                         </div>
                     </form>
                     <div class = "flex justify-center">
-                        <a href="{% url 'login' %}">Ir a Inicio de Sesión, tengo una Cuenta.
+                        <a href="{% url 'login' %}">Ir a Inicio de Sesión / Tengo una Cuenta
                         </a>
                     </div>
                 </div>

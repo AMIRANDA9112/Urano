@@ -4,12 +4,12 @@
 
     <section class = "bg-gray-900 text-gray-100">
 
-        <div class = "flex justify-center ">
+        <div class = "md:w-2/5 w-full justify-self-center ">
             <form method = "POST">
 
                 {%csrf_token%}
-                <p class = ""> Escribe Aqui</p>
-                <fieldset class = "text-gray-900">
+
+                <fieldset class = "bg-gray-500 text-gray-900 space-y-4">
 
                     {{form.as_p}}
 
@@ -17,7 +17,7 @@
 
                 <div class = "">
                     <button class = "bg-gray-800 py-2 px-4 rounded"
-                            type = "submit">Actualizar Advertencia</button>
+                            type = "submit">Actualizar Alerta</button>
 
                 </div>
 

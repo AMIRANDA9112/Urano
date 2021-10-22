@@ -24,12 +24,11 @@ SECRET_KEY = '(/s6/1vg@l*x8j8-um3(bk=u%flxhsr!ur&ffb(o9qn$cufu!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['amiranda.pythonanywhere.com']
 
 # Application definition
 
 INSTALLED_APPS = [
-    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -111,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -143,12 +142,12 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'corrupthunt@gmail.com'
-EMAIL_HOST_PASSWORD = 'Pipe91120707200'
+EMAIL_HOST_PASSWORD = '91120707200'
 
 SOCIAL_AUTH_TWITTER_KEY = 'i5JVYWWRItSuNVfCggGPV28rs'
 SOCIAL_AUTH_TWITTER_SECRET = 'DK7r35pNkvKnFj3SPrNlJa91rppdsYPGXTgLrlc0nevf5wZie8'
 SOCIAL_AUTH_LOGIN_ERROR_URL = 'login'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'login'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'home'
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 

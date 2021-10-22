@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from accounts import views as acc_views
+from accounts.forms import CustomLoginForm
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -24,7 +25,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('feed.urls')),
-    path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html', authentication_form=CustomLoginForm), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='accounts/logout.html'), name='logout'),
     path('register/', acc_views.SignUpView.as_view(), name='register'),
     path('activate/<uidb64>/<token>/', acc_views.ActivateAccount.as_view(), name='activate'),
@@ -33,6 +34,13 @@ urlpatterns = [
     path('profileupdate/', acc_views.profileupdate, name='profileupdate'),
     path('redirect/', acc_views.Redirect.as_view(template_name='accounts/redirect.html'), name='redirect'),
     path('', include('social_django.urls', namespace='social')),
+    path('settings/', acc_views.settings, name='settings'),
+    path('settings/password/', acc_views.password, name='password'),
+    path('reset_password/', auth_views.PasswordResetView.as_view(), name="reset_password"),
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name= "password_reset_complete"),
+
 
 
 ]

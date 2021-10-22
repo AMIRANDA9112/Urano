@@ -22,43 +22,63 @@
 
                 </div>
 
-                <div class = "flex justify-center">
+                <div class = "flex justify-center break-words">
 
                     <form method = "POST">
 
                     {%csrf_token%}
 
-                        <div class="grid grid-cols-2 py-8 px-8 bg-gray-500 text-gray-900 rounded">
-                        {{form}}
+                        <div class=" py-8 px-8 text-blue-100 rounded">
+
+
+                        {% for field in form %}
+                            <div class="my-2">
+                                {{ field.errors }}
+                                {{ field }}
+                                {% if field.help_text %}
+                                <p class="help text-blue-200">{{ field.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
                         </div>
 
 
-                        <div class = "grid grid-cols-2 py-8 px-8">
+                        <div class = "grid grid-cols-3 py-8 px-8 items-center">
 
 
-                        <div class = "flex justify-end">
-                            <button class = "hover:bg-gray-700 bg-gray-900
-                                                py-2 px-4 rounded" type = "submit">Iniciar Sesion</button>
+                            <div class = "flex justify-center ">
+                                <button class = "hover:bg-gray-700 bg-gray-900
+                                                    py-2 px-4 rounded" type = "submit">Iniciar Sesion</button>
+
+                            </div>
+
+                             <div class = "flex justify-center ">
+
+                                <a class="text-center hover:bg-gray-700 bg-gray-900
+                                py-2 px-4 rounded" href="{% url 'social:begin' 'twitter' %}"> <img class="" width=30 higth=30
+                                                    src="http://pngimg.com/uploads/twitter/twitter_PNG9.png"> </a>
+
+
+
+                            </div>
+
+
+                            <div class = "flex justify-center  ">
+
+                                <a class="text-center hover:bg-gray-700 bg-gray-900
+                                   py-2 px-4 rounded" href="{% url 'register' %}">Nuevo Usuario
+
+                                </a>
+
+                            </div>
+
+
+
 
                         </div>
 
-                        <div class = "flex justify-end">
-
-                        <a href="{% url 'social:begin' 'twitter' %}">Login with Twitter</a>
-
-                        </div>
-
-                        <div class = "flex justify-end">
-
-                            <a class="text-center hover:bg-gray-700 bg-gray-900
-                               py-2 px-4 rounded" href="{% url 'register' %}">Crear un Nuevo Usuario
-
-                            </a>
-
-                        </div>
 
 
-                        </div>
 
                     </form>
                 </div>

@@ -4,16 +4,43 @@
 
 <section class="text-gray-100">
     <div class="flex justify-center ">
-            <form class="w-full max-w-lg space-y-6" method = "POST"  enctype = "multipart/form-data">
+            <form class="w-full max-w-lg space-y-6 " method = "POST"  enctype = "multipart/form-data">
                 {%csrf_token%}
 
-                <div class="py-8 px-8 bg-gray-500 text-gray-900 rounded">
-                    {{pform.as_p}}
+                <div class="py-8 px-8 text-gray-900 rounded">
+
+                    <div class="my-2">
+                                {{ pform.bio.errors }}
+                                {{ pform.bio }}
+                                {% if pform.bio.help_text %}
+                                <p class="help text-blue-200">{{ pform.bio.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+
+                     <div class="my-2">
+
+                         {{ pform.image.errors }}
+                    <div class="relative border-dotted h-32 rounded-lg border-dashed border-2 border-gray-300 bg-blue-100 flex justify-center items-center">
+                    <div class="absolute">
+
+                    <div class="flex flex-col items-center"> <i class="fa fa-user-circle fa-4x text-gray-700" aria-hidden="true"></i> <span class="block text-gray-400 font-normal">Adjunte su Imagen de Perfil Aqui</span> </div>
+                    </div>{{ pform.image }}
+
+
+                    </div>
+                    {% if pform.image.help_text %}
+                    <p class="help text-blue-200">{{ pform.image.help_text|safe }}</p>
+                                {% endif %}
+
+                    </div>
+
 
                 </div>
-                <div class = "">
-                    <button class = "text-center hover:bg-gray-500 bg-gray-800
-                               py-2 px-4 rounded" type = "submit">Actualizar Perfil</button>
+
+
+                <div class = "grid grid-cols-1">
+                    <button class = " mb-10 justify-self-center text-center hover:bg-gray-500 bg-gray-800
+                               px-4 rounded" type = "submit">Actualizar Perfil</button>
                 </div>
             </form>
 

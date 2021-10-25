@@ -7,11 +7,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- TailWind CSS -->
-+
+
         <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
     </head>
     <body class="bg-gray-900">
 
@@ -26,7 +25,7 @@
 	<body>
 		<!-- Navbar goes here -->
 		<nav class="bg-gray-900 shadow-lg">
-			<div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 grid-cols-2">
+			<div class="md:h-20 h-18  max-w-6xl mx-auto px-4 grid md:grid-cols-3 grid-cols-2">
 
 					<div class="flex space-x-7 justify-start">
 
@@ -68,10 +67,10 @@
 			<!-- mobile menu -->
 			<div class="hidden mobile-menu">
 				<ul class="">
-					<li class="{%url 'home'%}"><a href="index.html" class="block text-sm px-2 py-4 text-white bg-blue-100 font-semibold">Muro Principal</a></li>
-					<li><a href="{%url 'profile'%}" class="block text-sm px-2 py-4 hover:bg-blue-100 transition duration-300">Perfil</a></li>
-					<li><a href="{%url 'settings'%}" class="block text-sm px-2 py-4 hover:bg-blue-100 transition duration-300">Configuración de Cuentar</a></li>
-					<li><a href="{%url 'logout'%}" class="block text-sm px-2 py-4 hover:bg-blue-100 transition duration-300">Cerrar Sesión</a></li>
+					<li><a href="{%url 'home'%}" class="block text-sm px-2 py-4 text-white hover:bg-blue-100 font-semibold">Principal</a></li>
+					<li><a href="{%url 'profile'%}" class="block text-sm px-2 py-4 text-white hover:bg-blue-100 transition duration-300">Perfil</a></li>
+					<li><a href="{%url 'settings'%}" class="block text-sm px-2 py-4 text-white hover:bg-blue-100 transition duration-300">Configuración de Cuentar</a></li>
+					<li><a href="{%url 'logout'%}" class="block text-sm px-2 py-4 text-white hover:bg-blue-100 transition duration-300">Cerrar Sesión</a></li>
 				</ul>
 			</div>
 			<script>

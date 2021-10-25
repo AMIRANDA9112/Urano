@@ -10,7 +10,7 @@ from .views import PublicationListView, PublicationCreateView, \
 
 urlpatterns = [
     path('', PublicationListView.as_view(), name='home'),
-    path('tags/<slug:tag_slug>/', PublicationTagsView.as_view(), name='publicationtags'),
+    path('tags/#<slug:tag_slug>/', PublicationTagsView.as_view(), name='publicationtags'),
     path('create/', PublicationCreateView.as_view(), name='publicationcreate'),
     path('publication/<int:pk>', PublicationDetail.as_view(), name='publicationdetail'),
     path('publication/<int:pk>/update', PublicationUpdateView.as_view(), name='publicationupdate'),

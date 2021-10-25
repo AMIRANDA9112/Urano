@@ -2,23 +2,38 @@
 
 {% block content %}
 
-<div class="text-gray-100">
-  <h2>Settings</h2>
+<div class="text-gray-100 justify-center text-center">
+  <h2 class="font-bold text-lg text-center">Configuración de Cuenta</h2>
 
-  <h3>Twitter</h3>
+
+   <h3 class ="text-center py-6"><i class="fa fa-address-card-o fa-4x text-gray-400 "></i></h3>
+    <a href="{% url 'profileupdate' %}">
+   <button  type="button"  "hover:bg-gray-500 bg-gray-900 text-blue-500
+                                                    py-2 px-4 rounded">Editar Perfil</button></a>
+
+
+   <h3 class ="text-center py-6"><i class="fa fa-key fa-4x text-gray-400 "></i></h3>
+    <a href="{% url 'password' %}">
+   <button  type="button"  "hover:bg-gray-500 bg-gray-900 text-blue-500
+                                                    py-2 px-4 rounded">Configurar Contraseña</button></a>
+
+
+  <h3 class ="text-center py-6"><i class="fa fa-twitter fa-4x text-blue-500 "></i></h3>
   {% if twitter_login %}
-    <p>Connected as <a href="https://twitter.com/{{ twitter_login.extra_data.access_token.screen_name }}/" target="_blank">@{{ twitter_login.extra_data.access_token.screen_name }}</a></p>
+    <p>Estas conectado como <a href="https://twitter.com/{{ twitter_login.extra_data.access_token.screen_name }}/" target="_blank">@{{ twitter_login.extra_data.access_token.screen_name }}</a></p>
     {% if can_disconnect %}
       <form method="post" action="{% url 'social:disconnect' 'twitter' %}">
         {% csrf_token %}
-        <button type="submit">Disconnect from Twitter</button>
+        <button class = "hover:bg-gray-500 bg-gray-900 text-blue-500
+                                                    py-2 px-4 rounded" type="submit">Desconectar de Twitter</button>
       </form>
     {% else %}
-      <button type="button" disabled>Disconnect from Twitter</button>
-      <p>You must <a href="{% url 'password' %}">define a password</a> for your account before disconnecting from Twitter.</p>
+      <button type="button"  "hover:bg-gray-500 bg-gray-900 text-blue-500
+                                                    py-2 px-4 rounded">Desconectar de Twitter</button>
+      <p>Debes <a class="hover:text-blue-500" href="{% url 'password' %}">definir primero una Contraseña </a> en tu cuenta Urano para poderla desconectar de Twitter.</p>
     {% endif %}
   {% else %}
-    <a href="{% url 'social:begin' 'twitter' %}">Connect to Twitter</a>
+    <a class ="text-blue-500" href="{% url 'social:begin' 'twitter' %}">Conectar a Twitter</a>
   {% endif %}
 
   </div>

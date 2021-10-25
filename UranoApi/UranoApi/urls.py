@@ -17,8 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from accounts import views as acc_views
-from accounts.forms import CustomLoginForm
-from django.views.generic import TemplateView
+from accounts.forms import CustomLoginForm, MailsPasswordResetForm, ResetPasswordForm
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -30,16 +29,16 @@ urlpatterns = [
     path('register/', acc_views.SignUpView.as_view(), name='register'),
     path('activate/<uidb64>/<token>/', acc_views.ActivateAccount.as_view(), name='activate'),
     path('profile/', acc_views.profile, name='profile'),
-    path('profile/<str:username>/', acc_views.profile, name='profile'),
+    path('profile/@<str:username>/', acc_views.profile, name='profile'),
     path('profileupdate/', acc_views.profileupdate, name='profileupdate'),
     path('redirect/', acc_views.Redirect.as_view(template_name='accounts/redirect.html'), name='redirect'),
     path('', include('social_django.urls', namespace='social')),
     path('settings/', acc_views.settings, name='settings'),
     path('settings/password/', acc_views.password, name='password'),
-    path('reset_password/', auth_views.PasswordResetView.as_view(), name="reset_password"),
-    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name= "password_reset_complete"),
+    path('reset_password/', auth_views.PasswordResetView.as_view(template_name='accounts/mail_password.html', form_class=MailsPasswordResetForm), name="reset_password"),
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_sent.html'), name="password_reset_done"),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='accounts/password_reset_form.html' ,form_class=ResetPasswordForm), name="password_reset_confirm"),
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_done'), name= "password_reset_complete"),
 
 
 

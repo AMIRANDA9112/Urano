@@ -27,8 +27,10 @@
 
             {%if user == request.user%}
 
-            <a href="{% url 'profileupdate' %}"><button class = "text-center hover:bg-gray-500 bg-gray-800
-                               py-2 px-4 rounded">Editar Perfil</button></a>
+            <a href="{% url 'settings' %}"><button class = "text-center hover:bg-gray-500 bg-gray-800
+                               py-2 px-4 rounded"><i class="fa fa-cogs fa-3x text-gray-100"></i></button></a>
+
+
             {% endif %}
 
     </div>
@@ -216,7 +218,7 @@
 
                 <div class="">
 
-                <p class="text-left break-words"> {{publication.address}}</p>
+                <p class="text-left break-words"> {{publication.addresss}}</p>
 
                 </div>
 

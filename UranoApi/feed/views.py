@@ -16,8 +16,40 @@ import pandas as pd
 import folium
 import geocoder
 
-
 from django.http import HttpResponseRedirect
+
+def linkedtags(text):
+    res = text.split()
+
+    for words in res:
+    	if words[0] == "@":
+    		l = words
+    		if l[-1] == "." or l[-1] == "," or l[-1] == "!" or l[-1] == "?" or l[-1] == ":" or l[-1] == ";":
+    			m = l[-1]
+    			l = l[:-1]
+    			text = text.replace(l, "<a href='amiranda.pythonanywhere.com/profile/" + l + "'>" + l + "</a>"+ m)
+
+    		else:
+
+    			text = text.replace(l, "<a href='amiranda.pythonanywhere.com/profile/" + l + "'>" + l + "</a>")
+
+    	if words[0] == "#":
+    		l = words
+
+    		if l[-1] == "." or l[-1] == "," or l[-1] == "!" or l[-1] == "?" or l[-1] == ":" or l[-1] == ";":
+    			m = l[-1]
+    			l = l[:-1]
+    			text = text.replace(l, "<a href='amiranda.pythonanywhere.com/tags/" + l + "'>" + l + "</a>"+ m)
+
+    		else:
+
+
+    			text = text.replace(l, "<a href='amiranda.pythonanywhere.com/tags/" + l + "'>" + l + "</a>")
+
+
+    return(text)
+
+
 
 
 def hastag(text):
@@ -30,6 +62,9 @@ def hastag(text):
                 hashtag_list.append(word[1:])
 
     return hashtag_list
+
+
+
 
 
 class PublicationDetail(LoginRequiredMixin, DetailView):
@@ -94,7 +129,7 @@ class PublicationListView(LoginRequiredMixin, ListView):
 
 class PublicationTagsView(LoginRequiredMixin, ListView):
     model = Publication
-    template_name = 'feed/home.html'
+    template_name = 'feed/tags.html'
 
     ordering = ['datatime']
 
@@ -102,8 +137,9 @@ class PublicationTagsView(LoginRequiredMixin, ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         warningmaps = []
+        tag_name = self.kwargs.get('tag_slug')
 
-        for publications in PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug')):
+        for publications in PublicationW.objects.filter(involved__slug=tag_name):
             WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
 
             toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
@@ -114,10 +150,28 @@ class PublicationTagsView(LoginRequiredMixin, ListView):
 
             warningmaps.append(WarningMaps._repr_html_())
 
+
+
+        TagsMaps = folium.Map(location=[4.583333, -74.066667], zoom_start=5, tiles="Stamen Terrain")
+
+        for publications in PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug')):
+
+
+
+            toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+
+            folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
+                          popup=publications.description).add_to(TagsMaps)
+            # Get HTML Representation of Map Object
+
+        tag_map = TagsMaps._repr_html_()
+
         warningmaps = zip(PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug')), warningmaps)
         context['publicationt'] = Publication.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
         context['publicationw'] = warningmaps
         context['publicationi'] = PublicationI.objects.all
+        context['tag_map'] = tag_map
+        context['tag_name'] = tag_name
 
         return context
 
@@ -257,6 +311,8 @@ class PublicationCreateView(LoginRequiredMixin, CreateView):
         form = self.get_form(form_class)
         form.instance.uname = self.request.user
 
+
+
         self.object = form.save()
 
         self.listtag = hastag(self.object.text)
@@ -282,12 +338,28 @@ class PublicationUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
     def form_valid(self, form):
         form.instance.uname = self.request.user
         self.object = form.save()
+        if self.object.empty_img:
+            self.object.img = None
+
+        if self.object.empty_img2:
+            self.object.img2 = None
+
+        if self.object.empty_video:
+            self.object.video = None
+
+        if self.object.empty_pdf:
+            self.object.pdf = None
+
+
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         self.listtag = hastag(self.object.text)
 
         for self.tag in self.listtag:
             self.object.tags.add(self.tag)
+
+
+        self.object.save()
 
         print(self.object.tags)
 
@@ -323,13 +395,28 @@ class PublicationWCreateView(LoginRequiredMixin, CreateView):
     form_class = PublicationWForm
 
     def form_valid(self, form):
+
+
         form.instance.uname = self.request.user
         self.object = form.save()
-        self.location = geocoder.arcgis(self.object.address)
+
+        self.object.addresss = 'Colombia, ' + self.object.addresss
+
+
+
+        try:
+            self.location = geocoder.arcgis(self.object.addresss)
+            if self.location.lat == None or self.location.lng == None:
+                return HttpResponse('You address input is invalid')
+        except Exception:
+            return HttpResponse('You address input is invalid')
+
+        self.location = geocoder.arcgis(self.object.addresss)
         if self.location.lat == None or self.location.lng == None:
             return HttpResponse('You address input is invalid')
 
         print('aquie es ', self.location)
+
 
         self.object.lat = self.location.lat
         self.object.lon = self.location.lng
@@ -364,9 +451,30 @@ class PublicationWUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
     def form_valid(self, form):
         form.instance.uname = self.request.user
         self.object = form.save()
-        self.location = geocoder.arcgis(self.object.address)
+
+        if self.object.empty_img:
+            self.object.img = None
+
+        if self.object.empty_img2:
+            self.object.img2 = None
+
+        if self.object.empty_video:
+            self.object.video = None
+
+        if self.object.empty_pdf:
+            self.object.pdf = None
+
+        try:
+            self.location = geocoder.arcgis(self.object.addresss)
+            if self.location.lat == None or self.location.lng == None:
+                return HttpResponse('You address input is invalid')
+        except Exception:
+            return HttpResponse('You address input is invalid')
+
+        self.location = geocoder.arcgis(self.object.addresss)
         if self.location.lat == None or self.location.lng == None:
             return HttpResponse('You address input is invalid')
+
 
         print('aquie es ', self.location)
 

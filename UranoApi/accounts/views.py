@@ -1,25 +1,30 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
-from .forms import ProfileUpdateForm, RegisterForm
+from .forms import ProfileUpdateForm, RegisterForm, CustomChangePasswordForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
-from django.views.generic import View, UpdateView
 from django.contrib.auth.models import User
 from django.contrib.auth import views as auth_views
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string, get_template
 from .tokens import account_activation_token
 from django.core.mail import EmailMultiAlternatives, send_mail
-from django.template import Context
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AdminPasswordChangeForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from social_django.models import UserSocialAuth
 import folium
 from taggit.models import slugify
+
+from django.urls import reverse_lazy
+from django.views.generic import View, UpdateView
+from django.template.loader import render_to_string, get_template
+from django.template import Context
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+
+
+
 
 
 
@@ -129,8 +134,16 @@ def profileupdate(request):
         pform = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
 
         if pform.is_valid:
-            pform.save()
-            return redirect('profile')
+
+            try:
+                pform.save()
+                return redirect('profile')
+
+
+            except Exception:
+                return HttpResponse('FOrmato de Imagen Invalido')
+
+
     else:
         pform = ProfileUpdateForm(instance=request.user.profile)
 
@@ -157,9 +170,9 @@ def settings(request):
 @login_required
 def password(request):
     if request.user.has_usable_password():
-        PasswordForm = PasswordChangeForm
+        PasswordForm = CustomChangePasswordForm
     else:
-        PasswordForm = AdminPasswordChangeForm
+        PasswordForm = CustomChangePasswordForm
 
     if request.method == 'POST':
         form = PasswordForm(request.user, request.POST)

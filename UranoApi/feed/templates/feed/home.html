@@ -6,10 +6,9 @@
             <div class="">
 
                 <div class="text-center py-8 ">
-                    <h1 class="">Hola {{user.username}}</h1>
+                    <h1 class="">{{user.username}}</h1>
                 </div>
 
-                {{m}}
 
                 <div class="grid grid-cols-2 flex justify-center ">
 
@@ -38,7 +37,7 @@
                         height= "50">
                     </div>
                     <div class="text-right">
-                        <a class="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}">
+                        <a clashttps://www.pythonanywhere.com/user/amiranda/files/home/amiranda/Urano/UranoApi/feed/templates/feeds="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}">
                             <h4>{{publication.uname}}</h4></a>
                         <a href="{% url 'publicationdetail' publication.pk %}"
                            class = "font-serif">{{publication.datatime}}</a>
@@ -181,7 +180,7 @@
 
 
                 <div class="text-center">
-                <h1 class="text-lg text-yellow-300 capitalize font-bold">&#128679 {{publication.case_id}} &#128679</h1>
+                <h1 class="text-lg text-yellow-300 capitalize font-bold">{{publication.case_id}}</h1>
                 </div>
                 <div class="grid grid-cols-1">
 
@@ -210,27 +209,11 @@
 
                 <div class="">
 
-                <p class="text-left break-words"> {{publication.address}}</p>
+                <p class="text-left break-words"> {{publication.addresss}}</p>
 
                 </div>
 
-                {% if publication.img %}
-                 <div class="">
-
-                    <img       src="{{ publication.img.url }}"
-                                width="640"
-                                height="264">
-                </div>
-
-                {% elif publication.img2 %}
-                 <div class="">
-
-                <img       src="{{ publication.img2.url }}"
-                            width="640"
-                            height="264">
-                </div>
-
-               {% elif publication.video %}
+                 {% if publication.video %}
 
                 <div class="">
 
@@ -247,6 +230,24 @@
 
                       </video>
                 </div>
+
+
+                {% elif publication.img %}
+                 <div class="">
+
+                    <img       src="{{ publication.img.url }}"
+                                width="640"
+                                height="264">
+                </div>
+
+                {% elif publication.img2 %}
+                 <div class="">
+
+                <img       src="{{ publication.img2.url }}"
+                            width="640"
+                            height="264">
+                </div>
+
 
                      {% elif publication.pdf %}
 

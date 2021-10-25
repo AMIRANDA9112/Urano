@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'taggit',
     'social_django',
 
+
 ]
 
 MIDDLEWARE = [
@@ -160,4 +161,5 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
 

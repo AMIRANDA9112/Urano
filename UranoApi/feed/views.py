@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .models import Publication, PublicationW, PublicationI
+from .models import Publication, PublicationW, PublicationI, Comments, CommentsW
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse
-from .forms import PublicationForm, PublicationWForm, PublicationIForm
+from .forms import PublicationForm, PublicationWForm, PublicationIForm, CommentsForm, CommentsWForm
 from taggit.models import Tag, slugify
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
@@ -11,41 +11,93 @@ from django.conf.urls.static import static
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import os
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 import pandas as pd
 import folium
 import geocoder
+import re
 
 from django.http import HttpResponseRedirect
 
 def linkedtags(text):
     res = text.split()
 
+
+
     for words in res:
-    	if words[0] == "@":
-    		l = words
-    		if l[-1] == "." or l[-1] == "," or l[-1] == "!" or l[-1] == "?" or l[-1] == ":" or l[-1] == ";":
-    			m = l[-1]
-    			l = l[:-1]
-    			text = text.replace(l, "<a href='amiranda.pythonanywhere.com/profile/" + l + "'>" + l + "</a>"+ m)
-
-    		else:
-
-    			text = text.replace(l, "<a href='amiranda.pythonanywhere.com/profile/" + l + "'>" + l + "</a>")
-
-    	if words[0] == "#":
-    		l = words
-
-    		if l[-1] == "." or l[-1] == "," or l[-1] == "!" or l[-1] == "?" or l[-1] == ":" or l[-1] == ";":
-    			m = l[-1]
-    			l = l[:-1]
-    			text = text.replace(l, "<a href='amiranda.pythonanywhere.com/tags/" + l + "'>" + l + "</a>"+ m)
-
-    		else:
 
 
-    			text = text.replace(l, "<a href='amiranda.pythonanywhere.com/tags/" + l + "'>" + l + "</a>")
 
+        if "@" in words or "#" in words:
+
+                if len(words) > 1:
+
+                    if words[0] == "@" and User.objects.filter(username=words[1:]):
+                        l = words
+                        text = text.replace(l, "<a href='/profile/" + l[1:] + "' style='color:#67E8F9'>" + l + "</a>")
+
+                    elif words[0] == "@" and User.objects.filter(username=words[1:-1]):
+                        l = words
+                        m = l[-1]
+                        l = l[:-1]
+                        text = text.replace(l, "<a href='/profile/" + l[1:] + "' style='color:#67E8F9'>" + l + "</a>" + m)
+
+
+                    elif words[0] == "#":
+
+
+                        if words[-1] in (".", ",", "!", "?", ":", ";", ")", "}", "]", "'", '"'):
+                            l = words
+                            m = l[-1]
+                            l = l[:-1]
+                            text = text.replace(l, "<a href='/tags/" + l[1:] + "' style='color:#67E8F9'>" + l + "</a>"+ m)
+
+                        else:
+                            l = words
+                            text = text.replace(l, "<a href='/tags/" + l[1:] + "' style='color:#67E8F9'>" + l + "</a>")
+
+
+                    elif words[0] in  (".",",","¡","¿",":",";","(","{","[","'",'"'):
+
+
+                	    if words[1] == "#":
+
+                                if words[-1] in (".",",","!","?",":",";",")","}","]","'",'"'):
+                                    l = words
+                                    m = l[-1]
+                                    s = l[0]
+                                    l = l[1:-1]
+                                    text = text.replace(l, s + "<a href='/tags/" + l[1:] + "' style='color:#67E8F9'>" + l + "</a>" + m)
+
+                                else:
+                                    l = words
+                                    s = l[0]
+                                    l = l[1:]
+                                    text = text.replace(l, s + "<a href='/tags/" + l[1:] + "' style='color:#67E8F9'>" + l + "</a>" )
+
+
+                    elif words[1] == "@" and User.objects.filter(username=words[2:]):
+                        l = words
+                        s = l[0]
+                        l = l[1:]
+
+                        text = text.replace(l, s + "<a href='/tags/" + l[1:] + "' style='color:#67E8F9'>" + l + "</a>" )
+
+                    elif words[1] == "@" and User.objects.filter(username=words[2:-1]):
+                        l = words
+                        m = l[-1]
+                        s = l[0]
+                        l = l[1:-1]
+
+                        text = text.replace(l, s + "<a href='/tags/" + l[1:] + "' style='color:#67E8F9'>" + l + "</a>"+ m)
+
+                else:
+                    pass
+
+        else:
+            pass
+
+        text = re.sub("\n", "<br>",text)
 
     return(text)
 
@@ -58,10 +110,41 @@ def hastag(text):
     if text:
 
         for word in text.split():
-            if word[0] == '#':
-                hashtag_list.append(word[1:])
+            if word[0] == "#" and len(word) > 1:
+                if word[-1] in (".",",","!","?",":",";",")","}","]","'",'"'):
+                    hashtag_list.append(word[1:-1])
+
+                else:
+                    hashtag_list.append(word[1:])
+
+            elif word[0] in (".",",","¡","¿",":",";","(","{","[","'",'"'):
+
+                if word[1] == "#" and len(word) > 1:
+                    if word[-1] in  (".",",","!","?",":",";",")","}","]","'",'"'):
+                        hashtag_list.append(word[2:-1])
+
+                    else:
+                        hashtag_list.append(word[2:])
 
     return hashtag_list
+
+
+def categorytag(text):
+    category  = []
+    res = text
+
+    linked = ""
+
+    for word in res:
+
+        category.append(word)
+
+        linked += '<a href="/tags/'+ word.lower() +'">' + word + ' </a>'
+
+    return linked, category
+
+
+
 
 
 
@@ -71,28 +154,315 @@ class PublicationDetail(LoginRequiredMixin, DetailView):
     model = Publication
     template_name = 'feed/publication_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        comments = Comments.objects.filter(publication = context['publication']).order_by('datatime')
+
+        context['comments'] = comments
+
+        form = CommentsForm()
+
+        context['form'] = form
+
+        return context
+
+
+    def post(self, request, pk, *args, **kwargs):
+
+        publication = Publication.objects.get(pk=pk)
+        form = CommentsForm(request.POST)
+
+        if form.is_valid():
+
+            comment = form.save(commit=False)
+
+            listtag = hastag(comment.text)
+
+            for tag in listtag:
+                comment.tags.add(tag)
+
+            comment.uname = request.user
+            comment.publication = publication
+            comment.tag_text = linkedtags(comment.text)
+            comment.save()
+
+
+        form_n = CommentsForm()
+
+        context= {}
+        context['publication'] = publication
+        context['form'] = form_n
+        context['comments'] = Comments.objects.filter(publication = context['publication']).order_by('datatime')
+
+        return render(request, 'feed/publication_detail.html', context)
+
+
+
+class AddLikeC(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        comment = Comments.objects.get(pk=pk)
+
+        is_dislike = False
+        for dislike in comment.dislikes.all():
+            if dislike == request.user:
+                is_dislike = True
+                break
+
+        if is_dislike:
+            comment.dislikes.remove(request.user)
+
+        is_like = False
+        for like in comment.likes.all():
+            if like == request.user:
+                is_like = True
+                break
+
+        if not is_like:
+            comment.likes.add(request.user)
+
+        if is_like:
+            comment.likes.remove(request.user)
+
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
+class AddDisLikeC(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+
+        comment = Comments.objects.get(pk=pk)
+
+        is_like = False
+        for like in comment.likes.all():
+            if like == request.user:
+                is_like = True
+                break
+
+        if is_like:
+            comment.likes.remove(request.user)
+
+        is_dislike = False
+        for dislike in comment.dislikes.all():
+            if dislike == request.user:
+                is_dislike = True
+                break
+
+        if not is_dislike:
+            comment.dislikes.add(request.user)
+
+        if is_dislike:
+            comment.dislikes.remove(request.user)
+
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comments
+    template_name = 'feed/comment_confirm_delete.html'
+
+
+    def post(self, request, post_pk, pk, *args, **kwargs):
+
+        Comments.objects.filter(pk=pk).delete()
+
+        return HttpResponseRedirect(reverse_lazy('publicationdetail', kwargs = {'pk': post_pk}))
+
+
+    def test_func(self):
+        publication = self.get_object()
+        return self.request.user == publication.uname
+
+
+class CommentEditView(UpdateView):
+    model = Comments
+    fields= ['text']
+    template_name = 'feed/comment_edit.html'
+
+    def form_valid(self, form):
+
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        form.uname = self.request.user
+
+
+        self.object.tags.clear()
+
+        listtag = hastag(self.object.text)
+
+        for tag in listtag:
+            self.object.tags.add(tag)
+
+        self.object = form.save()
+        self.object.tag_text = linkedtags(self.object.text)
+        self.object.save()
+
+        return HttpResponseRedirect(reverse_lazy('publicationdetail', kwargs = {'pk': self.object.publication.pk}))
+
+
+    def test_func(self):
+        publication = self.get_object()
+        return self.request.user == publication.uname
+
 
 class PublicationWDetail(LoginRequiredMixin, DetailView):
     model = PublicationW
     template_name = 'feed/publicationw_detail.html'
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
 
-        publications = context['publicationw']
-        WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
+        comments = CommentsW.objects.filter(publicationw = context['publicationw']).order_by('datatime')
 
-        toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+        context['comments'] = comments
 
-        folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
-                      popup=publications.description).add_to(WarningMaps)
-        # Get HTML Representation of Map Object
-        warningmaps = WarningMaps._repr_html_()
-        context['map'] = warningmaps
+        form = CommentsWForm()
+
+        context['form'] = form
 
         return context
+
+
+    def post(self, request, pk, *args, **kwargs):
+        publication = PublicationW.objects.get(pk=pk)
+        form = CommentsWForm(request.POST)
+
+        if form.is_valid():
+
+            comment = form.save(commit=False)
+
+            listtag = hastag(comment.text)
+
+            for tag in listtag:
+                comment.tags.add(tag)
+
+            comment.uname = request.user
+            comment.publication = publication
+            comment.tag_text = linkedtags(comment.text)
+            comment.save()
+
+
+        form_n = CommentsWForm()
+
+        context= {}
+        context['publicationw'] = publication
+        context['form'] = form_n
+        context['comments'] = CommentsW.objects.filter(publicationw = publication.pk).order_by('datatime')
+
+        return render(request, 'feed/publicationw_detail.html', context)
+
+
+class AddLikeCW(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        comment = CommentsW.objects.get(pk=pk)
+
+        is_dislike = False
+        for dislike in comment.dislikes.all():
+            if dislike == request.user:
+                is_dislike = True
+                break
+
+        if is_dislike:
+            comment.dislikes.remove(request.user)
+
+        is_like = False
+        for like in comment.likes.all():
+            if like == request.user:
+                is_like = True
+                break
+
+        if not is_like:
+            comment.likes.add(request.user)
+
+        if is_like:
+            comment.likes.remove(request.user)
+
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
+class AddDisLikeCW(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+
+        comment = CommentsW.objects.get(pk=pk)
+
+        is_like = False
+        for like in comment.likes.all():
+            if like == request.user:
+                is_like = True
+                break
+
+        if is_like:
+            comment.likes.remove(request.user)
+
+        is_dislike = False
+        for dislike in comment.dislikes.all():
+            if dislike == request.user:
+                is_dislike = True
+                break
+
+        if not is_dislike:
+            comment.dislikes.add(request.user)
+
+        if is_dislike:
+            comment.dislikes.remove(request.user)
+
+        next = request.POST.get('next', '/')
+
+        return HttpResponseRedirect(next)
+
+
+class CommentWDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = CommentsW
+    template_name = 'feed/commentw_confirm_delete.html'
+
+
+    def post(self, request, post_pk, pk, *args, **kwargs):
+
+        CommentsW.objects.filter(pk=pk).delete()
+
+        return HttpResponseRedirect(reverse_lazy('publicationwdetail', kwargs = {'pk': post_pk}))
+
+
+    def test_func(self):
+        publication = self.get_object()
+        return self.request.user == publication.uname
+
+
+class CommentWEditView(UpdateView):
+    model = CommentsW
+    fields= ['text']
+    template_name = 'feed/commentw_edit.html'
+
+    def form_valid(self, form):
+
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        form.uname = self.request.user
+
+
+        self.object.tags.clear()
+
+        listtag = hastag(self.object.text)
+
+        for tag in listtag:
+            self.object.tags.add(tag)
+
+        self.object = form.save()
+        self.object.tag_text = linkedtags(self.object.text)
+        self.object.save()
+
+        return HttpResponseRedirect(reverse_lazy('publicationwdetail', kwargs = {'pk': self.object.publicationw.pk}))
+
+
+    def test_func(self):
+        publication = self.get_object()
+        return self.request.user == publication.uname
+
 
 
 class PublicationListView(LoginRequiredMixin, ListView):
@@ -107,22 +477,22 @@ class PublicationListView(LoginRequiredMixin, ListView):
 
         warningmaps = []
 
-        for publications in PublicationW.objects.all():
+        for publications in PublicationW.objects.all().order_by('-datatime'):
             WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
 
-            toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+            toolmark = "ALERTA" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
 
             folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
-                          popup=publications.description).add_to(WarningMaps)
+                          popup=publications.description, icon=folium.Icon(color='yellow', icon='exclamation-triangle', prefix='fa')).add_to(WarningMaps)
             # Get HTML Representation of Map Object
 
             warningmaps.append(WarningMaps._repr_html_())
 
-        warningmaps = zip(PublicationW.objects.all(), warningmaps)
+        warningmaps = zip(PublicationW.objects.all().order_by('-datatime'), warningmaps)
 
-        context['publicationt'] = Publication.objects.all()
+        context['publicationt'] = Publication.objects.all().order_by('-datatime')
         context['publicationw'] = warningmaps
-        context['publicationi'] = PublicationI.objects.all()
+        context['publicationi'] = PublicationI.objects.all().order_by('-datatime')
 
         return context
 
@@ -142,26 +512,26 @@ class PublicationTagsView(LoginRequiredMixin, ListView):
         for publications in PublicationW.objects.filter(involved__slug=tag_name):
             WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
 
-            toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+            toolmark = "ALERTA" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
 
             folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
-                          popup=publications.description).add_to(WarningMaps)
+                          popup=publications.description, icon=folium.Icon(color='yellow', icon='exclamation-triangle', prefix='fa')).add_to(WarningMaps)
             # Get HTML Representation of Map Object
 
             warningmaps.append(WarningMaps._repr_html_())
 
 
 
-        TagsMaps = folium.Map(location=[4.583333, -74.066667], zoom_start=5, tiles="Stamen Terrain")
+        TagsMaps = folium.Map(location=[4.583333, -74.066667], zoom_start=4, tiles="Stamen Terrain")
 
         for publications in PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug')):
 
 
 
-            toolmark = "Advertencia" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
+            toolmark = "ALERTA" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
 
             folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
-                          popup=publications.description).add_to(TagsMaps)
+                          popup=publications.description, icon=folium.Icon(color='yellow', icon='exclamation-triangle', prefix='fa')).add_to(TagsMaps)
             # Get HTML Representation of Map Object
 
         tag_map = TagsMaps._repr_html_()
@@ -311,16 +681,21 @@ class PublicationCreateView(LoginRequiredMixin, CreateView):
         form = self.get_form(form_class)
         form.instance.uname = self.request.user
 
-
-
         self.object = form.save()
-
         self.listtag = hastag(self.object.text)
 
         for self.tag in self.listtag:
             self.object.tags.add(self.tag)
 
-        return HttpResponseRedirect(self.get_success_url())
+
+
+        self.object.tag_text = linkedtags(self.object.text)
+
+
+
+        self.object.save()
+
+        return HttpResponseRedirect(reverse_lazy('publicationdetail', kwargs = {'pk': self.object.pk}))
 
     def test_func(self):
         tweet = self.get_object()
@@ -337,6 +712,7 @@ class PublicationUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
 
     def form_valid(self, form):
         form.instance.uname = self.request.user
+
         self.object = form.save()
         if self.object.empty_img:
             self.object.img = None
@@ -350,20 +726,21 @@ class PublicationUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
         if self.object.empty_pdf:
             self.object.pdf = None
 
-
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
         self.listtag = hastag(self.object.text)
+
+        self.object.tags.clear()
 
         for self.tag in self.listtag:
             self.object.tags.add(self.tag)
+
+        self.object.tag_text = linkedtags(self.object.text)
 
 
         self.object.save()
 
         print(self.object.tags)
 
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(reverse_lazy('publicationdetail', kwargs = {'pk': self.object.pk}))
 
     def test_func(self):
         tweet = self.get_object()
@@ -390,50 +767,47 @@ class PublicationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
 class PublicationWCreateView(LoginRequiredMixin, CreateView):
     model = PublicationW
     template_name = 'feed/createw.html'
-
-    success_url = '/'
     form_class = PublicationWForm
+    success_url = '/'
 
     def form_valid(self, form):
 
-
         form.instance.uname = self.request.user
+
         self.object = form.save()
 
         self.object.addresss = 'Colombia, ' + self.object.addresss
 
 
-
-        try:
-            self.location = geocoder.arcgis(self.object.addresss)
-            if self.location.lat == None or self.location.lng == None:
-                return HttpResponse('You address input is invalid')
-        except Exception:
+        location = geocoder.arcgis(self.object.addresss)
+        if location.lat == None or location.lng == None:
             return HttpResponse('You address input is invalid')
 
-        self.location = geocoder.arcgis(self.object.addresss)
-        if self.location.lat == None or self.location.lng == None:
-            return HttpResponse('You address input is invalid')
-
-        print('aquie es ', self.location)
+        print('aquie es ', location)
 
 
-        self.object.lat = self.location.lat
-        self.object.lon = self.location.lng
+        self.object.lat = location.lat
+        self.object.lon = location.lng
 
-        print(self.object.lat)
-        print(self.location)
+        listtag = hastag(self.object.description)
 
-        self.listtag = hastag(self.object.description)
-
-        for self.tag in self.listtag:
-            self.object.involved.add(self.tag)
+        for tag in listtag:
+            self.object.involved.add(tag)
 
         print(self.object.involved)
 
+        self.object.tag_text = linkedtags(self.object.description)
+
+        self.object.tag_category, category =  categorytag(self.object.category)
+
+        for tag2 in category:
+            self.object.involved.add(tag2)
+
         self.object.save()
 
-        return HttpResponseRedirect(self.get_success_url())
+
+        return HttpResponseRedirect(reverse_lazy('publicationwdetail', kwargs = {'pk': self.object.pk}))
+
 
     def test_func(self):
         tweet = self.get_object()
@@ -452,6 +826,7 @@ class PublicationWUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
         form.instance.uname = self.request.user
         self.object = form.save()
 
+
         if self.object.empty_img:
             self.object.img = None
 
@@ -464,37 +839,33 @@ class PublicationWUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
         if self.object.empty_pdf:
             self.object.pdf = None
 
-        try:
-            self.location = geocoder.arcgis(self.object.addresss)
-            if self.location.lat == None or self.location.lng == None:
-                return HttpResponse('You address input is invalid')
-        except Exception:
-            return HttpResponse('You address input is invalid')
 
         self.location = geocoder.arcgis(self.object.addresss)
         if self.location.lat == None or self.location.lng == None:
             return HttpResponse('You address input is invalid')
 
 
-        print('aquie es ', self.location)
-
         self.object.lat = self.location.lat
         self.object.lon = self.location.lng
-        self.object.country = self.location.country
+        listtag = hastag(self.object.description)
 
-        print(self.object.lat)
-        print(self.location)
 
-        self.listtag = hastag(self.object.description)
+        self.object.involved.clear()
+        for tag in listtag:
+            self.object.involved.add(tag)
 
-        for self.tag in self.listtag:
-            self.object.involved.add(self.tag)
 
-        print(self.object.involved)
+        self.object.tag_text = linkedtags(self.object.description)
+
+        self.object.tag_category, category =  categorytag(self.object.category)
+
+        for tag2 in category:
+            self.object.involved.add(tag2)
 
         self.object.save()
 
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(reverse_lazy('publicationwdetail', kwargs = {'pk': self.object.pk}))
+
 
     def test_func(self):
         tweet = self.get_object()

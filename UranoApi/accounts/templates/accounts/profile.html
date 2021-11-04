@@ -1,4 +1,5 @@
 {% extends 'feed/base.html' %}
+{% load humanize %}
 {%block content%}
 
   <section class = "flex justify-center text-gray-100">
@@ -16,10 +17,11 @@
     </div>
 
   </section>
-  <article class="flex justify-center text-gray-100">
+
+  <div class="grid grid-cols-1 justify-items-center space-y-2 w-full text-gray-100">
     <div class="grid grid-cols-1 text-center space-y-6">
 
-          <div class="max-w-md text-center py-8">
+          <div class="max-w-md text-justify py-8">
 
             {{user.profile.bio}}
 
@@ -34,227 +36,254 @@
             {% endif %}
 
     </div>
-  </article>
+  {% for publication in publications %}
 
-         {%for publication in publications%}
+        <section class = " shadow grid grid-cols-1 justify-center justify-items-center bg-gray-900 text-gray-100 my-4 md:w-2/5 w-full">
 
-        <article class = "flex justify-center bg-gray-900 text-gray-100 my-8 ">
-            <div class = "grid grid-cols-1 shadow md:w-2/5 w-full px-2 py-2">
+
+
+            <div class = "grid grid-cols-1 w-11/12">
                 <div class = "grid grid-cols-2 pt-8 py-8">
                     <div class = "pr-8 ">
-                        <img href="{% url 'profile' publication.uname %}" class="rounded"
-                        src="{{ publication.uname.profile.image.url }}"
-                        width= "50"
-                        height= "50">
-                    </div>
-                    <div class="text-right">
-                        <a class="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}">
-                            <h4>{{publication.uname}}</h4></a>
-                        <a href="{% url 'publicationdetail' publication.pk %}"
-                           class = "font-serif">{{publication.datatime}}</a>
-
-                    </div>
-
-                </div>
-
-            <div class="grid grid-cols-1">
-
-                <div class="grid grid-cols-1">
-
-                    <p class="text-left break-words">{{publication.text}}</p>
-
-                </div>
-
-                <div class="text-gray-100 ">
-
-                    {% for tag in publication.tags.all %}
-
-                        <a href="{% url 'publicationtags' tag.slug %}" class = "text-blue-300 font-bold capitalize"> {{tag.name}}</a>
-                    {% endfor %}
-                </div>
 
 
-                {% if publication.video %}
+                        <button class="outline-none focus:outline-none" type="button" onclick="openPopover(event,'{{publication.id}}')">
+                            <img href="{% url 'profile' publication.uname %}" class="rounded shadow hover:shadow-lg"
+                            src="{{ publication.uname.profile.image.url }}"
+                            width= "50"
+                            height= "50"></button>
 
+                             <a class ="transform hover:text-gray-600 text-sm" href="{% url 'profile' publication.uname %}">
+                                <h4>{{publication.uname}}</h4></a>
 
-                <div class="">
-
-                      <video
-                        id="my-video"
-                        class="video-js"
-                        controls
-                        preload="auto"
-                        width="640"
-                        height="264"
-                        data-setup="{}"
-                      >
-                         <source src="{{ publication.video.url }}" />
-
-                      </video>
-                </div>
-
-
-                {% elif publication.img %}
-
-                <div class=" ">
-
-                    <img       src="{{ publication.img.url }}"
-                               width="640"
-                               height="264">
-                </div>
-
-
-                {% elif publication.img2 %}
-
-                 <div class="">
-
-                    <img       src="{{ publication.img2.url }}"
-                               width="640"
-                               height="264">
-                </div>
-
-
-                {% elif publication.pdf %}
-
-                <div class="text-center text-lg font-bold text-blue-300">
-
-                    <a href="{{publication.pdf.url}}">Documento PDF Adjunto <br> &#128196</a>
-
-                </div>
-
-
-                {% endif %}
-
-                <div class="grid mt-8 grid-cols-2 py-2 text-gray-100">
-
-                    <div class="text-center text-green-500">
-                        <a>{{publication.likes.all.count}}</a><br>
-                            <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded" type="submit">
-                                <a href="{% url 'publicationdetail' publication.pk %}">&#10004</a></button>
-
+                        <div class="grid grid-cols-1 max-w-max  hidden font-normal leading-normal md:text-sm text-xs text-left no-underline break-words rounded-lg shadow" id="{{publication.id}}">
+                            <div>
+                                <img href="{% url 'profile' publication.uname %}" class="rounded"
+                                src="{{ publication.uname.profile.image.url }}"
+                                width= "250"
+                                height= "250">
+                            </div>
+                            <div class="bg-gray-900 text-gray-100 p-3 rounded">
+                                  {{publication.uname.profile.bio}}
+                            </div>
                         </div>
-
-                    <div class="text-center text-red-500 ">
-
-                        <a>{{publication.dislikes.all.count}}</a><br>
-
-                            <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4  rounded" type="submit">
-                                <a href="{% url 'publicationdetail' publication.pk %}">&#10006</a></button>
-
-
                     </div>
-                </div>
+                    <div class="text-right px-2">
+                        <a href="{% url 'publicationdetail' publication.pk %}" class = "font-serif text-xs">
+                            {{publication.datatime|naturaltime}}</a> <br>
+
+                        <a class="text-xs" style="color:#67E8F9" href="{% url 'publicationdetail' publication.pk %}">
+                            <i class="fa fa-thumbs-up" ></i>{{publication.likes.all.count}}</a>
 
 
-            {%if publication.uname == request.user%}
-
-            <div class="grid mt-8 grid-cols-2 py-8">
-                <a class="text-center" href="{% url 'publicationupdate' publication.id %}">
-                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
-                </a>
-                <a class="text-center" href="{% url 'publicationdelete' publication.id %}">
-                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
-                </a>
-            </div>
-            {% endif %}
-
-
-            </div>
-
-                </div>
-
-            </div>
-
-        </article>
-        {% endfor %}
-
-    {% for publication, map in publicationsw %}
-
-        <article class = "flex justify-center bg-gray-900 text-gray-100 my-8 ">
-            <div class = "grid grid-cols-1 shadow md:w-2/5 w-full px-2 py-2">
-                <div class = "grid grid-cols-2 pt-8 py-8">
-                    <div class = "pr-8 ">
-                        <img class="rounded"
-                        src="{{ publication.uname.profile.image.url }}"
-                        width= "50"
-                        height= "50">
-                    </div>
-                    <div class="text-right">
-                        <a class="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}"><h4>{{publication.uname}}</h4></a>
-                        <a href="{% url 'publicationwdetail' publication.pk %}" class = "font-serif">{{publication.datatime}}</a>
-
+                        <a class="text-xs text-red-300" href="{% url 'publicationdetail' publication.pk %}">
+                            <i class="fa fa-thumbs-down  "></i>{{publication.dislikes.all.count}}</a>
                     </div>
 
                 </div>
 
-
-                <div class="text-center">
-                <h1 class="text-lg text-yellow-300 capitalize font-bold">&#128679 {{publication.case_id}} &#128679</h1>
-                </div>
+            <div class="grid grid-cols-1 ">
                 <div class="grid grid-cols-1">
-
-                    <p class="text-left break-words">{{publication.description}}</p>
-
-                </div>
-
-
-                <div class="grid grid-cols-1">
-
-                    <h1 class="text-center break-words text-lg font-bold">Involucrados</h1>
-
-                </div>
-                <div class="">
-
-                    {% for tag in publication.involved.all %}
-
-                        <a href="{% url 'publicationtags' tag.slug %}" class = "text-yellow-300 capitalize"> {{tag.name}}</a>
-
-                    {% endfor %}
-                </div>
-
-                <div class="text-center">
-                    <h1 class="text-center break-words text-lg font-bold">Ubicación</h1>
-                </div>
-
-                <div class="">
-
-                <p class="text-left break-words"> {{publication.addresss}}</p>
+                    <p class="text-left break-words md:text-sm text-xs">{{publication.tag_text|safe}}</p>
 
                 </div>
 
-                {% if publication.img %}
-                 <div class="">
-
-                    <img       src="{{ publication.img.url }}"
-                                width="640"
-                                height="264">
-                </div>
-
-                {% elif publication.img2 %}
-                 <div class="">
-
-                <img       src="{{ publication.img2.url }}"
-                            width="640"
-                            height="264">
-                </div>
-
-               {% elif publication.video %}
+                  {% if publication.video %}
 
                 <div class="">
 
                       <video
                         id="my-videow"
-                        class="video-js"
-                        controls
+                        class="video-js vjs-default-skin vjs-big-play-centered w-full"
+                        controls = "True"
                         preload="auto"
-                        width="640"
-                        height="264"
-                        data-setup="{}"
-                      >
+                        width = "480"
+                        height="240"
+
+
+                        data-setup="{}">
                         <source src="{{ publication.video.url }}" />
 
                       </video>
                 </div>
+                {% elif publication.img %}
+                <div class="place-self-center">
+                    <img
+                        class = "max-h-72 max-w-full "
+                        src="{{ publication.img.url }}">
+                </div>
+                {% elif publication.img2 %}
+                <div class="place-self-center">
+
+                    <img
+                        class = "max-h-72 max-w-full "
+                        src="{{ publication.img2.url }}">
+                </div>
+                     {% elif publication.pdf %}
+
+                <div class="text-center text-lg font-bold text-yellow-300 py-4 ">
+
+                    <a class="justify-self-center" href="{{publication.pdf.url}}">Documento PDF Adjunto <br> &#128196</a>
+                </div>
+
+                    {% else %}
+                <div class="">
+
+                     {{map|safe}}
+
+                </div>
+
+                    {% endif %}
+
+                <div class="text-gray-100 ">
+
+                    {% for tag in publication.tags.all %}
+
+                    <a href="{% url 'publicationtags' tag.slug %}" class = " md:text-sm text-xs" style="color:#67E8F9"> {{tag.name}}</a>
+                    {% endfor %}
+
+                </div>
+                <div class="grid grid-cols-1 text-gray-100">
+                    <div class="text-center">
+
+                        {% if publication.img %}
+
+                        <a href="{% url 'publicationdetail' publication.pk %}"> <i class="fa fa-file-image-o" style="color:#67E8F9"></i> </a>
+                        {% endif %}
+                        {% if publication.img2 %}
+                        <a href="{% url 'publicationdetail' publication.pk %}"> <i class="fa fa-file-image-o" style="color:#67E8F9"></i> </a>
+
+                        {% endif %}
+                        {% if publication.video %}
+                        <a href="{% url 'publicationdetail' publication.pk %}"> <i class="fa fa-file-video-o" style="color:#67E8F9"></i> </a>
+                        {% endif %}
+                        {% if publication.pdf %}
+                        <a href="{% url 'publicationdetail' publication.pk %}"> <i class="fa fa-file-pdf-o" style="color:#67E8F9"></i> </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {%if publication.uname == request.user%}
+
+                <div class="grid grid-cols-2 align-text-bottom">
+
+                    <div class="text-right justify-self-end pr-4 w-8 text-gray-300" >
+                        <a href="{% url 'publicationupdate' publication.id %}">
+                            <i class="fa fa-pencil-square-o  "></i>
+                        </a>
+                    </div>
+                    <div class=" text-left justify-self-start pl-4 w-8 text-gray-300">
+
+                        <a href="{% url 'publicationdelete' publication.id %}">
+                            <i class="fa fa-trash "></i>
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+
+    {% for publication, map in publicationsw %}
+
+        <section class = "shadow flex justify-center bg-gray-900 text-gray-100 my-4 md:w-2/5 w-full">
+            <div class = "grid grid-cols-1 w-11/12">
+                 <div class = "grid grid-cols-2 pt-8 py-8">
+                    <div class = "pr-8 ">
+
+                        <button class="outline-none focus:outline-none" type="button" onclick="openPopover(event,'{{publication.id}}')">
+                            <img href="{% url 'profile' publication.uname %}" class="rounded shadow hover:shadow-lg"
+                            src="{{ publication.uname.profile.image.url }}"
+                            width= "50"
+                            height= "50"></button>
+
+                            <a class ="transform hover:text-gray-600 text-sm" href="{% url 'profile' publication.uname %}">
+                            <h4>{{publication.uname}}</h4></a>
+
+                        <div class="grid grid-cols-1 max-w-max  hidden font-normal leading-normal md:text-sm text-xs   text-left no-underline break-words rounded-lg shadow" id="{{publication.id}}">
+                          <div>
+                            <img href="{% url 'profile' publication.uname %}" class="rounded"
+                            src="{{ publication.uname.profile.image.url }}"
+                            width= "250"
+                            height= "250">
+                            </div>
+                            <div class="bg-gray-900 text-gray-100 p-3 rounded">
+                              {{publication.uname.profile.bio}}
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="text-right px-2">
+                        <a href="{% url 'publicationwdetail' publication.pk %}"><h1 class="text-md text-yellow-200 capitalize">{{publication.case_id}}</h1></a>
+                        <a href="{% url 'publicationwdetail' publication.pk %}"
+                           class = "font-serif  text-xs">{{publication.datatime|naturaltime}}</a><br>
+
+                           <a class="text-xs" style="color:#67E8F9" href="{% url 'publicationwdetail' publication.pk %}"><i class="fa fa-thumbs-up" ></i>{{publication.likes.all.count}}</a>
+
+
+                        <a class="text-xs text-red-300" href="{% url 'publicationwdetail' publication.pk %}"><i class="fa fa-thumbs-down  "></i>{{publication.dislikes.all.count}}</a>
+
+
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1">
+
+                    <p class="text-left break-words text-xs">{{publication.tag_text|safe}}</p>
+
+                </div>
+
+
+
+
+                <div class="">
+
+                <p class="font-serif text-left break-words  md:text-sm text-xs"> {{publication.addresss}}</p>
+
+                </div>
+
+                 {% if publication.video %}
+
+                <div class="grid grid-cols-1 justify-center justify-self-center">
+
+                       <video
+                        id="my-videow"
+                        class="video-js vjs-default-skin vjs-big-play-centered w-full"
+                        controls = "True"
+                        preload="auto"
+
+
+
+                        data-setup="{}">
+                        <source src="{{ publication.video.url }}" />
+
+                      </video>>
+                </div>
+
+
+                {% elif publication.img %}
+                 <div class="">
+
+                    <img        class = "max-h-72 max-w-full "
+                                src="{{ publication.img.url }}">
+                </div>
+
+                {% elif publication.img2 %}
+                 <div class="">
+
+                <img        class = "max-h-72 max-w-full "
+
+                            src="{{ publication.img2.url }}"
+                            width="640"
+                            height="240">
+                </div>
+
 
                      {% elif publication.pdf %}
 
@@ -274,89 +303,83 @@
 
                 {% endif %}
 
+                <div class="">
 
-                <div class="grid mt-8 grid-cols-2 py-2 text-gray-100">
+                    {% for tag in publication.involved.all %}
 
-                    <div class="text-center text-green-500">
-                        <a>{{publication.likes.all.count}}</a><br>
+                        <a href="{% url 'publicationtags' tag.slug %}" class = "text-yellow-200 md:text-base text-sm"> {{tag.name}}</a>
+
+                    {% endfor %}
+                </div>
 
 
-                            <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded" type="submit">
-                                <a href="{% url 'publicationwdetail' publication.pk %}">&#10004</a></button>
+                <div class="grid  grid-cols-1 text-gray-100">
+
+                    <div class="text-center text-yellow-200">
+
+                        {% if publication.img %}
+
+                        <a href="{% url 'publicationwdetail' publication.pk %}"> <i class="fa fa-file-image-o"></i> </a>
+                        {% endif %}
+                        {% if publication.img2 %}
+                        <a href="{% url 'publicationwdetail' publication.pk %}"> <i class="fa fa-file-image-o"></i> </a>
+
+                        {% endif %}
+                        {% if publication.video %}
+
+
+                        <a href="{% url 'publicationwdetail' publication.pk %}"> <i class="fa fa-file-video-o"></i> </a>
+                        {% endif %}
+
+                        {% if publication.pdf %}
+
+                        <a href="{% url 'publicationwdetail' publication.pk %}"> <i class="fa fa-file-pdf-o py-4"></i> </a>
+
+
+
+                        {% endif %}
 
                         </div>
 
-                    <div class="text-center text-red-500 ">
 
-                        <a>{{publication.dislikes.all.count}}</a><br>
-
-
-
-                            <button  class = "hover:bg-gray-700 bg-gray-800 py-2 px-4  rounded" >
-                                <a href="{% url 'publicationwdetail' publication.pk %}">&#10006</a></button>
-
-                    </div>
                 </div>
+
 
 
             {% if publication.uname == request.user %}
 
-            <div class="grid mt-8 grid-cols-2 py-8">
-                <a class="text-center" href="{% url 'publicationwupdate' publication.id %}">
-                    <button  class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded ">Editar</button>
+            <div class="grid grid-cols-2  align-text-bottom">
+                <a class="text-right px-2" href="{% url 'publicationwupdate' publication.id %}">
+                    <button class = " py-1 rounded"><i class="fa fa-pencil-square-o  text-gray-300"></i></button>
                 </a>
-                <a class="text-center" href="{% url 'publicationwdelete' publication.id %}">
-                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
+                <a class="text-left px-2" href="{% url 'publicationwdelete' publication.id %}">
+                    <button class = " py-1 rounded"><i class="fa fa-trash text-gray-300"></i></button>
                 </a>
             </div>
             {% endif %}
 
             </div>
 
-        </article>
+        </section>
     {% endfor %}
 
-    {% for publication in publicationsi %}
+    </div>
 
-        <article class = "flex justify-center bg-gray-900 text-gray-100">
-            <div class = "grid grid-cols-1">
-                <div class = "grid grid-cols-2 pt-8">
-                    <div class = "pr-8">
-                        <img class="rounded"
-                        src="{{ publication.uname.profile.image.url }}"
-                        width= "50"
-                        height= "50">
-                    </div>
-                <div class="text-right">
-                    <a class="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}"><h4>{{publication.uname}}</h4></a>
-                    <p class = "font-serif">{{publication.datatime}}</p>
+    <script src="//vjs.zencdn.net/7.10.2/video.min.js"></script>
 
-                </div>
+                        <script src="https://unpkg.com/@popperjs/core@2.9.1/dist/umd/popper.min.js" charset="utf-8"></script>
 
-
-                </div>
-
-                <div class="grid grid-cols-1">
-
-                <div class="grid grid-cols-1">
-                <h5 class="text-lg">{{publication.text}}</h5>
-                {%if publication.uname == user%}
-                </div>
-
-                <div class="grid grid-cols-2">
-                <a class="text-center" href="{% url 'publicationiupdate' publication.id %}">
-                <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
-                </a>
-                <a class="text-center" href="{% url 'publicationidelete' publication.id %}">
-                <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
-                </a>
-                </div>
-
-                {% endif %}
-                </div>
-                </div>
-
-        </article>
-    {% endfor %}
+                        <script>
+                          function openPopover(event,popoverID){
+                            let element = event.target;
+                            while(element.nodeName !== "BUTTON"){
+                              element = element.parentNode;
+                            }
+                            var popper = Popper.createPopper(element, document.getElementById(popoverID), {
+                              placement: 'right'
+                            });
+                            document.getElementById(popoverID).classList.toggle("hidden");
+                          }
+                        </script>
 
 {%endblock content%}

@@ -9,13 +9,13 @@
 
 
 
-    <section class = "bg-gray-900 text-gray-100">
+    <section class = "bg-gray-900 text-gray-100 md:w-2/5 w-full">
 
-        <div class = "grid grid-cols-1justify-items-center ">
+        <div class = "grid grid-cols-1justify-items-center w-11/12">
 
-        <div class = "md:w-2/5 w-full justify-center justify-self-center text-center">
+        <div class = " justify-center justify-self-center text-center">
 
-            <form method="post" enctype="multipart/form-data" autocomplete="off" >
+            <form method="POST" enctype="multipart/form-data" autocomplete="off" >
 
                 {% csrf_token %}
 
@@ -38,20 +38,22 @@
                                 {{ form.addresss }}
                             </div>
 
+                    <div class="my-2 text-yellow-200 overflow-auto h-32 text-left text-xs">
+                                {{ form.category.errors }}
+                                {{ form.category }}
+                            </div>
+
+
                     <div class="grid grid-cols-2 justify-center text-gray-100">
 
 
                          <div class="grid grid-cols-1 my-2 mx-2">
 
 
-                                <div>
-                            {{ form.empty_img }}
+                                <div class="text-xs">
+                            {{ form.empty_img }} Vacio
                              </div>
 
-
-                             <div>
-                            Sin Imagen
-                             </div>
 
                             {{ form.img.errors }}
                             <div  id = "button" class="relative border-dotted h-20 rounded-lg border-dashed border-2 border-gray-300 bg-blue-100 hover:bg-gray-500 flex justify-center items-center overflow-hidden">
@@ -84,14 +86,10 @@
                           <div class="grid grid-cols-1 my-2 mx-2">
 
 
-                                 <div>
-                            {{ form.empty_img2 }}
+                                 <div class="text-xs">
+                            {{ form.empty_img2 }} Vacio
                              </div>
 
-
-                             <div>
-                            Sin Imagen
-                             </div>
 
                             {{ form.img2.errors }}
                             <div id = "button2" class="relative border-dotted h-20 rounded-lg border-dashed border-2 border-gray-300 bg-blue-100 hover:bg-gray-500 flex justify-center items-center overflow-hidden">
@@ -130,14 +128,12 @@
 
                          <div class="grid grid-cols-1  my-2 mx-2">
 
-                                <div>
-                            {{ form.empty_video }}
+                                <div class="text-xs">
+                            {{ form.empty_video }} Vacio
                              </div>
 
 
-                             <div>
-                            Sin Video
-                             </div>
+
 
                              {{ form.video.errors }}
                             <div id="button3" class="relative border-dotted h-20 rounded-lg border-dashed border-2 border-gray-300 bg-blue-100 hover:bg-gray-500 flex justify-center items-center overflow-hidden">
@@ -171,14 +167,12 @@
 
                              <div class="grid grid-cols-1  my-2 mx-2">
 
-                                    <div>
-                            {{ form.empty_pdf }}
+                                    <div class="text-xs">
+                            {{ form.empty_pdf }} Vacio
                              </div>
 
 
-                             <div>
-                            Sin PDF
-                             </div>
+
 
                              {{ form.pdf.errors }}
                             <div id="button4" class="relative border-dotted h-20 rounded-lg border-dashed border-2 border-gray-300 bg-blue-100 hover:bg-gray-500 flex justify-center items-center overflow-hidden">
@@ -215,8 +209,7 @@
                     </div>
 
 
-            <button class = "hover:bg-gray-500 bg-gray-800 text-yellow-300
-                                                    py-2 px-4 rounded" type = "submit">Editar</button>
+            <button class = "hover:bg-gray-500 bg-gray-800 text-yellow-300 py-2 px-4 rounded" type = "submit">Editar</button>
 
 
             </form>

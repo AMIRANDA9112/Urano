@@ -6,11 +6,11 @@
 
 
 
-    <section class = "bg-gray-900 text-gray-100">
+    <section class = "bg-gray-900 text-gray-100 md:w-2/5 w-full">
 
-        <div class = "grid grid-cols-1 justify-items-center ">
+        <div class = "grid grid-cols-1 justify-items-center w-11/12">
 
-        <div class = "md:w-2/5 w-full h-auto justify-center justify-self-center text-center">
+        <div class = " h-auto justify-center justify-self-center text-center">
 
             <form method="post" enctype="multipart/form-data" autocomplete="off" >
 
@@ -30,13 +30,8 @@
 
                          <div class="grid grid-cols-1 my-2 mx-2">
 
-                             <div>
-                            {{ form.empty_img }}
-                             </div>
-
-
-                             <div>
-                            Sin Imagen
+                             <div class="text-xs">
+                            {{ form.empty_img }} Vacio
                              </div>
 
                             {{ form.img.errors }}
@@ -72,13 +67,8 @@
                           <div class="grid grid-cols-1 my-2 mx-2">
 
 
-                              <div>
-                            {{ form.empty_img2 }}
-                             </div>
-
-
-                             <div>
-                            Sin Imagen
+                              <div class="text-xs">
+                            {{ form.empty_img2 }} Vacio
                              </div>
 
                             {{ form.img2.errors }}
@@ -119,13 +109,8 @@
                          <div class="grid grid-cols-1  my-2 mx-2">
 
 
-                               <div>
-                            {{ form.empty_video }}
-                             </div>
-
-
-                             <div>
-                            Sin Video
+                               <div class="text-xs">
+                            {{ form.empty_video }} Vacio
                              </div>
 
                              {{ form.video.errors }}
@@ -160,13 +145,8 @@
 
                              <div class="grid grid-cols-1  my-2 mx-2">
 
-                          <div>
-                            {{ form.empty_pdf }}
-                             </div>
-
-
-                             <div>
-                            Sin PDF
+                             <div class="text-xs">
+                            {{ form.empty_pdf }} Vacio
                              </div>
 
 
@@ -208,8 +188,7 @@
                     </div>
 
 
-            <button class = "hover:bg-gray-500 bg-gray-800 text-gray-100
-                                                    py-2 px-4 rounded" type = "submit">Editar</button>
+            <button class = "hover:bg-gray-500 bg-gray-800 text-gray-100 py-2 px-4 rounded" type = "submit" >Editar</button>
 
 
             </form>
@@ -432,11 +411,6 @@ document.getElementById("cancel4").onclick = () => {
 
 
 };
-
-
-
-
-
 
 </script>
 

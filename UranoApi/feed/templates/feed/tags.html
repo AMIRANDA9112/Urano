@@ -3,7 +3,7 @@
     {%block content%}
 
         <section class = "flex justify-center bg-gray-900 text-gray-200">
-            <div class="px-8">
+            <div class="">
 
                 {% if tag_name %}
 
@@ -56,7 +56,7 @@
 
                 <div class="grid grid-cols-1">
 
-                    <p class="text-left break-words">{{publication.text}}</p>
+                    <p class="text-left break-words">{{publication.tag_text|safe}}</p>
 
                 </div>
 
@@ -190,7 +190,7 @@
                 </div>
                 <div class="grid grid-cols-1">
 
-                    <p class="text-left break-words">{{publication.description}}</p>
+                    <p class="text-left break-words">{{publication.tag_text|safe}}</p>
 
                 </div>
 

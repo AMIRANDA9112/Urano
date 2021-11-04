@@ -1,0 +1,31 @@
+{%extends 'feed/base.html'%}
+
+
+{%block content%}
+    <section class = "bg-gray-900 ">
+
+        <div class = "grid grid-cols-1 md:w-3/5 w-full justify-items-center pt-8 ">
+
+            <div class = "w-11/12 justify-center justify-self-center text-center">
+
+                <form method="post" enctype="multipart/form-data" >
+
+                    {% csrf_token %}
+                        <div class="mx-4 text-gray-900">
+                                    {{ form.text.errors }}
+                                    {{ form.text }}</div>
+
+                    <button class = "hover:bg-gray-500 bg-gray-800 text-gray-100
+                                                            py-2 px-4 rounded" type = "submit">Editar Comentario</button>
+
+
+                </form>
+
+            </div>
+
+        </div>
+    </section>
+
+
+
+{%endblock content%}

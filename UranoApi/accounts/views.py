@@ -101,11 +101,15 @@ def profile(request, username=None):
         publicationst = user.publications.all()
         publicationsw = user.publicationsw.all()
         publicationsi = user.publicationsi.all()
+        comments = user.comments.all()
+        commentsw = user.commentsw.all()
     else:
 
         publicationst = current_user.publications.all()
         publicationsw = current_user.publicationsw.all()
         publicationsi = current_user.publicationsi.all()
+        comments = current_user.comments.all()
+        commentsw = current_user.commentsw.all()
         user = current_user
 
     warningmaps = []
@@ -116,7 +120,7 @@ def profile(request, username=None):
         toolmark = "ALERTA" + "\n" + str(str(slugify(publications.datatime))[:10] + "\n" + publications.case_id)
 
         folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
-                      popup=publications.description).add_to(WarningMaps)
+                      popup=publications.description, icon=folium.Icon(icon='exclamation-triangle', prefix='fa')).add_to(WarningMaps)
         # Get HTML Representation of Map Object
 
         warningmaps.append(WarningMaps._repr_html_())
@@ -141,7 +145,7 @@ def profileupdate(request):
 
 
             except Exception:
-                return HttpResponse('FOrmato de Imagen Invalido')
+                return HttpResponse('Formato de Imagen Invalido')
 
 
     else:
@@ -158,6 +162,8 @@ def settings(request):
         twitter_login = user.social_auth.get(provider='twitter')
     except UserSocialAuth.DoesNotExist:
         twitter_login = None
+
+
 
     can_disconnect = (user.social_auth.count() > 1 or user.has_usable_password())
 

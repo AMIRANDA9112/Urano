@@ -9,10 +9,14 @@ django-taggit
 geocoder
 folium
 Pillow
- oauthlib
- requests-oauthlib
- python3-openid
- PyJWT
- social-auth-core
- social-auth-app-django
- django-widget-tweaks
+oauthlib
+requests-oauthlib
+python3-openid
+PyJWT
+social-auth-core
+social-auth-app-django
+django-mapbox-location-field
+django-multiselectfield
+sodapy
+dj-static
+static-ranges

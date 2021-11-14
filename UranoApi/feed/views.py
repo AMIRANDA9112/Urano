@@ -178,14 +178,16 @@ class PublicationDetail(LoginRequiredMixin, DetailView):
             comment = form.save(commit=False)
 
             listtag = hastag(comment.text)
+            comment.uname = request.user
+            comment.publication = publication
+            comment.tag_text = linkedtags(comment.text)
+
+
+            comment.save()
 
             for tag in listtag:
                 comment.tags.add(tag)
 
-            comment.uname = request.user
-            comment.publication = publication
-            comment.tag_text = linkedtags(comment.text)
-            comment.save()
 
 
         form_n = CommentsForm()
@@ -193,7 +195,7 @@ class PublicationDetail(LoginRequiredMixin, DetailView):
         context= {}
         context['publication'] = publication
         context['form'] = form_n
-        context['comments'] = Comments.objects.filter(publication = context['publication']).order_by('datatime')
+        context['comments'] = Comments.objects.filter(publication = pk).order_by('datatime')
 
         return render(request, 'feed/publication_detail.html', context)
 
@@ -327,6 +329,7 @@ class PublicationWDetail(LoginRequiredMixin, DetailView):
 
 
     def post(self, request, pk, *args, **kwargs):
+
         publication = PublicationW.objects.get(pk=pk)
         form = CommentsWForm(request.POST)
 
@@ -335,14 +338,16 @@ class PublicationWDetail(LoginRequiredMixin, DetailView):
             comment = form.save(commit=False)
 
             listtag = hastag(comment.text)
+            comment.uname = request.user
+            comment.publicationw = publication
+            comment.tag_text = linkedtags(comment.text)
+
+
+            comment.save()
 
             for tag in listtag:
                 comment.tags.add(tag)
 
-            comment.uname = request.user
-            comment.publication = publication
-            comment.tag_text = linkedtags(comment.text)
-            comment.save()
 
 
         form_n = CommentsWForm()
@@ -350,7 +355,7 @@ class PublicationWDetail(LoginRequiredMixin, DetailView):
         context= {}
         context['publicationw'] = publication
         context['form'] = form_n
-        context['comments'] = CommentsW.objects.filter(publicationw = publication.pk).order_by('datatime')
+        context['comments'] = CommentsW.objects.filter(publicationw = publication).order_by('datatime')
 
         return render(request, 'feed/publicationw_detail.html', context)
 
@@ -475,23 +480,8 @@ class PublicationListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
 
-        warningmaps = []
-
-        for publications in PublicationW.objects.all().order_by('-datatime'):
-            WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
-
-            toolmark = "ALERTA" + " " + str(str(slugify(publications.datatime))[:10] + " " + publications.case_id)
-
-            folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
-                          popup=publications.description, icon=folium.Icon(color='yellow', icon='exclamation-triangle', prefix='fa')).add_to(WarningMaps)
-            # Get HTML Representation of Map Object
-
-            warningmaps.append(WarningMaps._repr_html_())
-
-        warningmaps = zip(PublicationW.objects.all().order_by('-datatime'), warningmaps)
-
         context['publicationt'] = Publication.objects.all().order_by('-datatime')
-        context['publicationw'] = warningmaps
+        context['publicationw'] = PublicationW.objects.all().order_by('-datatime')
         context['publicationi'] = PublicationI.objects.all().order_by('-datatime')
 
         return context
@@ -524,7 +514,9 @@ class PublicationTagsView(LoginRequiredMixin, ListView):
 
         TagsMaps = folium.Map(location=[4.583333, -74.066667], zoom_start=4, tiles="Stamen Terrain")
 
-        for publications in PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug')):
+        publicationsw = PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug')).order_by('-datatime')
+
+        for publications in publicationsw:
 
 
 
@@ -536,10 +528,9 @@ class PublicationTagsView(LoginRequiredMixin, ListView):
 
         tag_map = TagsMaps._repr_html_()
 
-        warningmaps = zip(PublicationW.objects.filter(involved__slug=self.kwargs.get('tag_slug')), warningmaps)
-        context['publicationt'] = Publication.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
-        context['publicationw'] = warningmaps
-        context['publicationi'] = PublicationI.objects.all
+        context['publicationt'] = Publication.objects.filter(tags__slug=self.kwargs.get('tag_slug')).order_by('-datatime')
+        context['publicationw'] = publicationsw
+        context['publicationi'] = PublicationI.objects.all()
         context['tag_map'] = tag_map
         context['tag_name'] = tag_name
 
@@ -788,6 +779,17 @@ class PublicationWCreateView(LoginRequiredMixin, CreateView):
 
         self.object.lat = location.lat
         self.object.lon = location.lng
+        WarningMaps = folium.Map(location=[self.object.lat, self.object.lon], zoom_start=10)
+
+        toolmark = "ALERTA" + " " + str(str(slugify(self.object.datatime))[:10] + " " + self.object.case_id)
+
+        folium.Marker([self.object.lat, self.object.lon], tooltip=toolmark,
+                      popup=self.object.description, icon=folium.Icon(color='yellow', icon='exclamation-triangle', prefix='fa')).add_to(WarningMaps)
+        # Get HTML Representation of Map Object
+
+
+
+        self.object.mapaddress = WarningMaps._repr_html_()
 
         listtag = hastag(self.object.description)
 
@@ -847,6 +849,19 @@ class PublicationWUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 
         self.object.lat = self.location.lat
         self.object.lon = self.location.lng
+
+        WarningMaps = folium.Map(location=[self.object.lat, self.object.lon ], zoom_start=10)
+
+        toolmark = "ALERTA" + " " + str(str(slugify(self.object.datatime))[:10] + " " + self.object.case_id)
+
+        folium.Marker([self.object.lat, self.object.lon], tooltip=toolmark,
+                      popup=self.object.description, icon=folium.Icon(color='yellow', icon='exclamation-triangle', prefix='fa')).add_to(WarningMaps)
+        # Get HTML Representation of Map Object
+
+
+
+        self.object.mapaddress = WarningMaps._repr_html_()
+
         listtag = hastag(self.object.description)
 
 

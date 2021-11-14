@@ -12,12 +12,17 @@
         <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet">
+
+
+        <link href="//www.domain.com/videojs/plugins/videojs.pip.css" rel="stylesheet" type="text/css">
     </head>
 
 	<body class="" style="background-color: #12151E">
 		<!-- Navbar goes here -->
-		<nav class="shadow-lg fixed w-full z-40  top-0">
-			<div class="bg-gray-900 md:h-20 h-16  max-w-6xl mx-auto px-1 md:px-4 grid grid-cols-3 items-center bg-gray-900" >
+		<nav class=" fixed w-full z-40 top-0">
+			<div class="h-14 w-full mx-auto px-1 md:px-4 grid grid-cols-3 items-center shadow-lg bg-gray-900" >
 
 			        <div class="md:flex hidden space-x-1 justify-start">
 							<a href="{%url 'profile'%}" class="flex py-2 ">
@@ -59,23 +64,19 @@
 
 			</div>
 			<!-- mobile menu -->
-
+"
 			<div class="grid grid-cols-1">
 
 
 			<div class="hidden w-1/5 justify-self-center post-menu text-center bg-gray-900 hover:opacity-100 opacity-80 rounded">
 				<ul class="">
-					<li><a href="{%url 'publicationcreate'%}" class="block px-2 py-4"><i class="fa fa-commenting fa-lg" style="color:#22D3EE"></i></a></li>
+					<li><a href="{%url 'publicationcreate'%}" class=" block px-2 py-4"><i class="fa fa-commenting fa-lg" style="color:#22D3EE"></i></a></li>
 					<li><a href="{%url 'publicationwcreate'%}" class="block px-2 py-4"><i class="fa fa-exclamation-triangle  fa-lg text-yellow-300"></i></a></li>
 					<li><a href=# class="block px-2 py-4 "><i class="fa fa-exclamation-circle  fa-lg text-red-300"></i></a></li>
 				</ul>
 			</div>
-			</div>
 
-			<div class="grid grid-cols-1">
-
-
-			<div class="hidden w-1/5 justify-self-end mobile-menu text-center bg-gray-900 hover:opacity-100 opacity-80 rounded">
+			<div class="hidden absolute right-0 w-1/5 justify-self-end mobile-menu text-center bg-gray-900 hover:opacity-100 opacity-80 rounded">
 				<ul class="">
 					<li><a href="{%url 'profile' %}" class="block px-2 py-4"><i class="fa fa-user-circle-o fa-lg  text-gray-100"></i></a></li>
 					<li><a href="{%url 'settings' %}" class="block px-2 py-4"><i class="fa fa-cogs  fa-lg text-gray-100"></i></a></li>

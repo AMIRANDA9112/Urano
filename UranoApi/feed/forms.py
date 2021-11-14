@@ -25,18 +25,22 @@ class CommentsForm(ModelForm):
     class Meta:
         model = Comments
         fields = ['text']
-        widgets = { 'text' : forms.Textarea(attrs={'class' : 'text-xs rounded bg-gray-700 text-gray-100 placeholder-blue-100 w-full','rows':'3', 'cols':'40', 'placeholder':'Comentario de Libre Opinión'}),}
+        widgets = { 'text' : forms.Textarea()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['text'].widget.attrs.update({'class': 'text-xs rounded bg-gray-700 text-gray-100 placeholder-blue-100 '})
+        self.fields['text'].widget.attrs.update({'class': 'text-xs rounded bg-gray-700 text-gray-100 placeholder-blue-100 w-full','rows':'3', 'cols':'40', 'placeholder':'Comentario de Libre Opinión'})
 
 
 class CommentsWForm(ModelForm):
     class Meta:
         model = CommentsW
         fields = ['text']
-        widgets = { 'text' : forms.Textarea(attrs={'class' : 'text-xs rounded bg-gray-700 text-gray-100 placeholder-blue-100 w-full', 'rows':'3', 'cols':'40', 'placeholder':'Comentario de Libre Opinión'}),}
+        widgets = { 'text' : forms.Textarea(),}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['text'].widget.attrs.update({'class': 'text-xs rounded bg-gray-700 text-gray-100 placeholder-blue-100 w-full','rows':'3', 'cols':'40', 'placeholder':'Comentario de Libre Opinión'})
 
 
 class PublicationWForm(ModelForm):

@@ -17,6 +17,7 @@ class Publication(models.Model):
     text = models.TextField(default='', help_text="Espacio de Libre Expresión")
     tag_text = models.TextField(blank=True)
     datatime = models.DateTimeField(default=timezone.now)
+    updatetime = models.DateTimeField(null=True, blank=True)
     uname = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publications')
     img = models.ImageField(upload_to='profile',
                             null=True,
@@ -87,12 +88,14 @@ class PublicationW(models.Model):
     uname = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publicationsw')
     case_id = models.CharField(max_length=80, default='')
     datatime = models.DateTimeField(default=timezone.now)
+    updatetime = models.DateTimeField(null=True, blank=True)
 
     description = models.TextField(null=True)
     tag_text = models.TextField(blank=True)
 
 
     addresss = models.TextField( null=True, blank=True)
+    mapaddress = models.TextField(null=True, blank=True)
     tag_address = models.TextField(blank=True)
     lat = models.FloatField(default=0)
     lon = models.FloatField(default=0)
@@ -143,6 +146,7 @@ class Comments(models.Model):
     text = models.TextField(default='')
     tag_text = models.TextField(blank=True)
     datatime = models.DateTimeField(default=timezone.now)
+    updatetime = models.DateTimeField(null=True, blank=True)
     uname = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments',)
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE, related_name='comments', null=True)
     slug = models.SlugField(unique=True, max_length=100, null=True, blank=True)
@@ -155,6 +159,7 @@ class CommentsW(models.Model):
     text = models.TextField(default='')
     tag_text = models.TextField(blank=True)
     datatime = models.DateTimeField(default=timezone.now)
+    updatetime = models.DateTimeField(null=True, blank=True)
     uname = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commentsw',)
     publicationw = models.ForeignKey(PublicationW, on_delete=models.CASCADE, related_name='comments', null=True)
     slug = models.SlugField(unique=True, max_length=100, null=True, blank=True)

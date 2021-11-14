@@ -59,7 +59,7 @@ class SignUpView(View):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-            messages.success(request, 'Please Confirm your email to complete registration.')
+            messages.success(request, 'Porfavor confirme su correo electronico para terminar el registro')
 
             return redirect('redirect')
 
@@ -83,8 +83,8 @@ class ActivateAccount(View):
             messages.success(request, 'Your account have been confirmed.')
             return redirect('home')
         else:
-            messages.warning(request, ('The confirmation link was invalid, '
-                                       'possibly because it has already been used.'))
+            messages.warning(request, ('El Link de Confirmación es invalido, '
+                                       'Posiblemente ya haya sido usado'))
             return redirect('home')
 
 
@@ -112,25 +112,13 @@ def profile(request, username=None):
         commentsw = current_user.commentsw.all()
         user = current_user
 
-    warningmaps = []
-
-    for publications in publicationsw:
-        WarningMaps = folium.Map(location=[publications.lat, publications.lon], zoom_start=10)
-
-        toolmark = "ALERTA" + "\n" + str(str(slugify(publications.datatime))[:10] + "\n" + publications.case_id)
-
-        folium.Marker([publications.lat, publications.lon], tooltip=toolmark,
-                      popup=publications.description, icon=folium.Icon(icon='exclamation-triangle', prefix='fa')).add_to(WarningMaps)
-        # Get HTML Representation of Map Object
-
-        warningmaps.append(WarningMaps._repr_html_())
-
-    warningmaps = zip(publicationsw, warningmaps)
 
     return render(request, 'accounts/profile.html', {'user': user,
                                                      'publications': publicationst,
-                                                     'publicationsw': warningmaps,
-                                                     'publicationsi': publicationsi})
+                                                     'publicationsw': publicationsw,
+                                                     'publicationsi': publicationsi,
+                                                     'comments' : comments,
+                                                     'commentsw' : commentsw,})
 
 
 def profileupdate(request):

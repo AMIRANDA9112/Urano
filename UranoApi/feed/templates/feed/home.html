@@ -23,15 +23,19 @@
                              <a class ="hover:text-gray-600 text-sm" href="{% url 'profile' publication.uname %}">
                                 <h4 style="color:#67E8F9">{{publication.uname}}</h4></a>
 
-                        <div class="grid grid-cols-1 max-w-max  hidden font-normal leading-normal text-sm text-left no-underline break-words rounded-lg shadow" id="{{publication.id}}">
+                        <div style ="z-index: 4" class="grid grid-cols-1 max-w-max  hidden font-normal leading-normal text-sm text-left no-underline break-words rounded-lg shadow z-999" id="{{publication.id}}">
                             <div>
-                                <img href="{% url 'profile' publication.uname %}" class="rounded"
+                                <a href="{% url 'profile' publication.uname %}">
+                                <img  class="rounded"
                                 src="{{ publication.uname.profile.image.url }}"
                                 width= "250"
-                                height= "250">
+                                height= "250"></a>
                             </div>
                             <div class="bg-gray-900 text-white p-3 rounded">
                                   {{publication.uname.profile.bio}}
+                            </div>
+                            <div class="bg-gray-900 p-3 rounded">
+                                  <a style="color:#67E8F9" class = "text-xs" >{{publication.uname.profile.followers.all.count}}</a>
                             </div>
                         </div>
                     </div>
@@ -44,50 +48,87 @@
                            <a class="text-xs text-red-300" href="{% url 'publicationdetail' publication.pk %}">  <i class="fa fa-thumbs-down  "> </i> {{publication.dislikes.all.count}}</a>
                     </div>
 
-                </div>
+            </div>
 
             <div class="grid grid-cols-1 ">
-                <div class="grid grid-cols-1">
-                    <p class="text-left break-words md:text-sm text-xs overflow-auto max-h-16">{{ publication.tag_text|safe }}</p>
+                <div class="grid grid-cols-1 overflow-auto max-h-16">
+                    <p class="text-left break-words md:text-sm text-xs">{{ publication.tag_text|safe }}</p>
 
                 </div>
 
                   {% if publication.video %}
 
-                <div class="py-2">
+
+
+
+
+                <div class="">
+
+
 
                       <video
+
                         id="my-videow"
-                        class="video-js vjs-default-skin vjs-big-play-centered w-full"
+                        class="video-js vjs-theme-city rounded w-full"
                         controls = "True"
-                        preload="auto"
+                        preload="metadata"
+                        style=""
                         width = "480"
                         height="240"
+                        language="es"
 
 
                         data-setup="{}">
                         <source src="{{ publication.video.url }}" />
 
                       </video>
+
+                       <style>
+
+
+
+                          .vjs-theme-city .vjs-big-play-button {
+                                  border-color: #67E8F9;
+                                  background: #011226;
+
+                                }
+
+                        .vjs-theme-city .vjs-big-play-button {
+                            line-height: 1em;
+                              height: 1em;
+                              width 2em;
+                              border-radius: 3em;
+
+
+                        }
+
+
+                        .vjs-theme-city .vjs-play-progress {
+                                      background: #67E8F9;
+                                    }
+
+                      </style>
+
+
                 </div>
                 {% elif publication.img %}
                 <div class="place-self-center py-2">
-                    <img
-                        class = "max-h-72 max-w-full "
-                        src="{{ publication.img.url }}">
+                    <a href="{% url 'publicationdetail' publication.pk %}"><img
+                        class = "max-h-72 max-w-full shadow hover:shadow-lg rounded"
+                        src="{{ publication.img.url }}"></a>
                 </div>
                 {% elif publication.img2 %}
                 <div class="place-self-center py-2">
 
-                    <img
-                        class = "max-h-72 max-w-full "
-                        src="{{ publication.img2.url }}">
+                   <a href="{% url 'publicationdetail' publication.pk %}"> <img
+                        class = "max-h-72 max-w-full shadow hover:shadow-lg rounded"
+                        src="{{ publication.img2.url }}"></a>
                 </div>
                      {% elif publication.pdf %}
 
-                <div class="text-center text-lg font-bold text-yellow-300 py-4 ">
+                <div class="text-center text-lg font-bold  py-4 ">
 
-                    <a class="justify-self-center" href="{{publication.pdf.url}}">Documento PDF Adjunto <br> &#128196</a>
+                    <a class="justify-self-center  shadow hover:opacity-20 text-gray-200" href="{{publication.pdf.url}}">Documento Adjunto <br> <i class="fa fa-file-pdf-o fa-4x text-red-300"></i></a>
                 </div>
 
                     {% endif %}
@@ -144,7 +185,7 @@
     </section>
     {% endfor %}
 
-    {% for publication, map in publicationw %}
+    {% for publication in publicationw %}
 
         <section class = "shadow-lg flex justify-center text-gray-100 my-4 md:w-2/5 w-11/12 rounded-lg bg-gray-900">
             <div class = "grid grid-cols-1 w-11/12">
@@ -169,6 +210,10 @@
                             </div>
                             <div class="bg-gray-900 text-white p-3 rounded">
                               {{publication.uname.profile.bio}}
+                            </div>
+
+                            <div class="bg-gray-900 p-3 rounded">
+                                  <a style="color:#67E8F9" class = "text-xs" >{{publication.uname.profile.followers.all.count}}</a>
                             </div>
 
                         </div>
@@ -207,49 +252,84 @@
 
                 </div>
 
-                 {% if publication.video %}
+                  {% if publication.video %}
 
-                <div class="py-2">
+
+
+
+
+                <div class="">
+
+
 
                       <video
+
                         id="my-videow"
-                        class="video-js vjs-default-skin vjs-big-play-centered w-full"
+                        class="video-js vjs-theme-city rounded w-full"
                         controls = "True"
-                        preload="auto"
+                        preload="metadata"
+                        style=""
                         width = "480"
                         height="240"
+                        language="es"
 
 
                         data-setup="{}">
                         <source src="{{ publication.video.url }}" />
 
                       </video>
+
+                       <style>
+
+
+
+                          .vjs-theme-city .vjs-big-play-button {
+                                  border-color: #67E8F9;
+                                  background: #011226;
+
+                                }
+
+                        .vjs-theme-city .vjs-big-play-button {
+                            line-height: 1em;
+                              height: 1em;
+                              width 2em;
+                              border-radius: 3em;
+
+
+                        }
+
+
+                        .vjs-theme-city .vjs-play-progress {
+                                      background: #67E8F9;
+                                    }
+
+                      </style>
+
                 </div>
                 {% elif publication.img %}
                 <div class="place-self-center py-2">
-                    <img
-                        class = "max-h-72 max-w-full "
-                        src="{{ publication.img.url }}">
+                    <a href="{% url 'publicationwdetail' publication.pk %}"><img
+                        class = "max-h-72 max-w-full shadow hover:shadow-lg rounded"
+                        src="{{ publication.img.url }}"></a>
                 </div>
                 {% elif publication.img2 %}
                 <div class="place-self-center py-2">
 
-                    <img
-                        class = "max-h-72 max-w-full "
-                        src="{{ publication.img2.url }}">
+                   <a href="{% url 'publicationwdetail' publication.pk %}"> <img
+                        class = "max-h-72 max-w-full shadow hover:shadow-lg rounded"
+                        src="{{ publication.img2.url }}"></a>
                 </div>
                      {% elif publication.pdf %}
 
-                <div class="text-center text-lg font-bold text-yellow-300 py-4 ">
+                 <div class="text-center text-lg font-bold  py-4 ">
 
-                    <a class="justify-self-center" href="{{publication.pdf.url}}">Documento PDF Adjunto <br> &#128196</a>
+                    <a class="justify-self-center  shadow hover:opacity-20 text-gray-200" href="{{publication.pdf.url}}">Documento Adjunto <br> <i class="fa fa-file-pdf-o fa-4x text-red-300"></i></a>
                 </div>
-
                 {% else %}
 
-                <div class="py-4 ">
+                     <div class="pb-2 ">
 
-                   {{map|safe}}
+                   {{publication.mapaddress|safe}}
                 </div>
 
                     {% endif %}
@@ -314,10 +394,11 @@
 
 
 
-
-    <script src="//vjs.zencdn.net/7.10.2/video.min.js"></script>
+                        <script src="//vjs.zencdn.net/7.16.0/video.min.js"></script>
 
                         <script src="https://unpkg.com/@popperjs/core@2.9.1/dist/umd/popper.min.js" charset="utf-8"></script>
+
+
 
                         <script>
                           function openPopover(event,popoverID){
@@ -326,11 +407,14 @@
                               element = element.parentNode;
                             }
                             var popper = Popper.createPopper(element, document.getElementById(popoverID), {
-                              placement: 'right'
+                              placement: 'right-end'
                             });
                             document.getElementById(popoverID).classList.toggle("hidden");
                           }
                         </script>
+
+
+
 
 
 

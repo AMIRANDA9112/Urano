@@ -1,6 +1,7 @@
 {% extends  'feed/base.html'%}
 
     {%block content%}
+    {% load humanize %}
 
         <section class = "flex justify-center bg-gray-900 text-gray-200">
             <div class="">
@@ -33,330 +34,410 @@
 
         {%for publication in publicationt%}
 
-        <article class = "flex justify-center bg-gray-900 text-gray-100 my-8 ">
-            <div class = "grid grid-cols-1 shadow md:w-2/5 w-full px-2 py-2">
-                <div class = "grid grid-cols-2 pt-8 py-8">
-                    <div class = "pr-8 ">
-                        <img href="{% url 'profile' publication.uname %}" class="rounded"
-                        src="{{ publication.uname.profile.image.url }}"
-                        width= "50"
-                        height= "50">
-                    </div>
-                    <div class="text-right">
-                        <a clashttps://www.pythonanywhere.com/user/amiranda/files/home/amiranda/Urano/UranoApi/feed/templates/feeds="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}">
-                            <h4>{{publication.uname}}</h4></a>
-                        <a href="{% url 'publicationdetail' publication.pk %}"
-                           class = "font-serif">{{publication.datatime}}</a>
+        <section class = " shadow-lg grid grid-cols-1 justify-center justify-items-center text-gray-100 my-4 md:w-2/5 w-11/12 rounded-lg bg-gray-900">
 
-                    </div>
-
-                </div>
-
-            <div class="grid grid-cols-1">
-
-                <div class="grid grid-cols-1">
-
-                    <p class="text-left break-words">{{publication.tag_text|safe}}</p>
-
-                </div>
-
-                <div class="text-gray-100 ">
-
-                    {% for tag in publication.tags.all %}
-
-                        <a href="{% url 'publicationtags' tag.slug %}" class = "text-blue-300 font-bold capitalize"> {{tag.name}}</a>
-                    {% endfor %}
-                </div>
+            <div class = "grid grid-cols-1 w-11/12">
+                <div class = "grid grid-cols-2 pb-6 pt-4">
+                    <div class = "">
 
 
-                {% if publication.video %}
+                        <button class="outline-none focus:outline-none" type="button" onclick="openPopover(event,'{{publication.id}}')">
+                            <img href="{% url 'profile' publication.uname %}" class="rounded shadow hover:shadow-lg"
+                            src="{{ publication.uname.profile.image.url }}"
+                            width= "50"
+                            height= "50"></button>
 
+                             <a class ="hover:text-gray-600 text-sm" href="{% url 'profile' publication.uname %}">
+                                <h4 style="color:#67E8F9">{{publication.uname}}</h4></a>
 
-                <div class="rounded">
+                        <div style ="z-index: 4" class="grid grid-cols-1 max-w-max  hidden font-normal leading-normal text-sm text-left no-underline break-words rounded-lg shadow z-999" id="{{publication.id}}">
+                            <div>
+                                <a href="{% url 'profile' publication.uname %}">
+                                <img  class="rounded"
+                                src="{{ publication.uname.profile.image.url }}"
+                                width= "250"
+                                height= "250"></a>
+                            </div>
+                            <div class="bg-gray-900 text-white p-3 rounded">
+                                  {{publication.uname.profile.bio}}
+                            </div>
 
-                      <video
-                        id="my-video"
-                        class="video-js"
-                        controls
-                        preload="auto"
-                        width="640"
-                        height="264"
-                        data-setup="{}"
-                      >
-                         <source src="{{ publication.video.url }}" />
-
-                      </video>
-                </div>
-
-
-                {% elif publication.img %}
-
-                <div class=" rounded">
-
-                    <img       src="{{ publication.img.url }}"
-                               width="640"
-                               height="264">
-                </div>
-
-
-                {% elif publication.img2 %}
-
-                 <div class="rounded">
-
-                    <img       src="{{ publication.img2.url }}"
-                               width="640"
-                               height="264">
-                </div>
-
-
-                {% elif publication.pdf %}
-
-                <div class="text-center text-lg font-bold text-blue-300">
-
-                    <a href="{{publication.pdf.url}}">Documento PDF Adjunto <br> &#128196</a>
-
-                </div>
-
-
-                {% endif %}
-
-
-
-                <div class="grid mt-8 grid-cols-2 py-2 text-gray-100">
-
-                    <div class="text-center text-green-500">
-                        <a>{{publication.likes.all.count}}</a><br>
-                            <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded" type="submit">
-                                <a href="{% url 'publicationdetail' publication.pk %}">&#10004</a></button>
-
+                            <div class="bg-gray-900 p-3 rounded">
+                                  <a style="color:#67E8F9" class = "text-xs" >{{publication.uname.profile.followers.all.count}}</a>
+                            </div>
                         </div>
-
-                    <div class="text-center text-red-500 ">
-
-                        <a>{{publication.dislikes.all.count}}</a><br>
-
-                            <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4  rounded" type="submit">
-                                <a href="{% url 'publicationdetail' publication.pk %}">&#10006</a></button>
-
-
                     </div>
-                </div>
+                    <div class="text-right ">
+                        <a href="{% url 'publicationdetail' publication.pk %}" class = "font-serif text-xs">
+                            {{publication.datatime|naturaltime}}</a> <br>
 
-
-            {%if publication.uname == user%}
-
-            <div class="grid mt-8 grid-cols-2 py-8">
-                <a class="text-center" href="{% url 'publicationupdate' publication.id %}">
-                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
-                </a>
-                <a class="text-center" href="{% url 'publicationdelete' publication.id %}">
-                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
-                </a>
-            </div>
-            {% endif %}
-
+                        <a class="text-xs text-yellow-200" href="{% url 'publicationdetail' publication.pk %}"><i class="fa fa-comments-o  "> </i> {{publication.comments.all.count}}</a>
+                           <a class="text-xs" style="color:#67E8F9" href="{% url 'publicationdetail' publication.pk %}">  <i class="fa fa-thumbs-up" ></i> {{publication.likes.all.count}}</a>
+                           <a class="text-xs text-red-300" href="{% url 'publicationdetail' publication.pk %}">  <i class="fa fa-thumbs-down  "> </i> {{publication.dislikes.all.count}}</a>
+                    </div>
 
             </div>
 
-                </div>
-
-            </div>
-
-        </article>
-        {% endfor %}
-
-    {% for publication, map in publicationw %}
-
-        <article class = "flex justify-center bg-gray-900 text-gray-100 my-8 px-2 py-2">
-            <div class = "grid grid-cols-1 shadow md:w-2/5 w-full">
-                <div class = "grid grid-cols-2 pt-8 py-8">
-                    <div class = "pr-8 ">
-                        <img class="rounded"
-                        src="{{ publication.uname.profile.image.url }}"
-                        width= "50"
-                        height= "50">
-                    </div>
-                    <div class="text-right">
-                        <a class="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}"><h4>{{publication.uname}}</h4></a>
-                        <a href="{% url 'publicationwdetail' publication.pk %}" class = "font-serif">{{publication.datatime}}</a>
-
-                    </div>
+            <div class="grid grid-cols-1 ">
+                <div class="grid grid-cols-1 overflow-auto max-h-16">
+                    <p class="text-left break-words md:text-sm text-xs">{{ publication.tag_text|safe }}</p>
 
                 </div>
 
-
-                <div class="text-center">
-                <h1 class="text-lg text-yellow-300 capitalize font-bold">{{publication.case_id}}</h1>
-                </div>
-                <div class="grid grid-cols-1">
-
-                    <p class="text-left break-words">{{publication.tag_text|safe}}</p>
-
-                </div>
-
-
-                <div class="grid grid-cols-1">
-
-                    <h1 class="text-center break-words text-lg font-bold">Involucrados</h1>
-
-                </div>
-                <div class="">
-
-                    {% for tag in publication.involved.all %}
-
-                        <a href="{% url 'publicationtags' tag.slug %}" class = "text-yellow-300 capitalize"> {{tag.name}}</a>
-
-                    {% endfor %}
-                </div>
-
-                <div class="text-center">
-                    <h1 class="text-center break-words text-lg font-bold">Ubicación</h1>
-                </div>
+                  {% if publication.video %}
 
                 <div class="">
-
-                <p class="text-left break-words"> {{publication.addresss}}</p>
-
-                </div>
-
-
-                {% if publication.video %}
-
-                <div class="rounded">
 
                       <video
+
                         id="my-videow"
-                        class="video-js"
-                        controls
-                        preload="auto"
-                        width="640"
-                        height="264"
-                        data-setup="{}"
-                      >
+                        class="video-js vjs-theme-city rounded w-full"
+                        controls = "True"
+                        preload="metadata"
+                        style=""
+                        width = "480"
+                        height="240"
+                        language="es"
+
+
+                        data-setup="{}">
                         <source src="{{ publication.video.url }}" />
 
                       </video>
-                </div>
 
+                       <style>
+
+
+
+                          .vjs-theme-city .vjs-big-play-button {
+                                  border-color: #67E8F9;
+                                  background: #011226;
+
+                                }
+
+                        .vjs-theme-city .vjs-big-play-button {
+                            line-height: 1em;
+                              height: 1em;
+                              width 2em;
+                              border-radius: 3em;
+
+
+                        }
+
+
+                        .vjs-theme-city .vjs-play-progress {
+                                      background: #67E8F9;
+                                    }
+
+                      </style>
+
+
+                </div>
                 {% elif publication.img %}
-                 <div class="rounded">
-
-                    <img       src="{{ publication.img.url }}"
-                                width="640"
-                                height="264">
+                <div class="place-self-center py-2">
+                    <a href="{% url 'publicationdetail' publication.pk %}"><img
+                        class = "max-h-72 max-w-full shadow hover:shadow-lg rounded"
+                        src="{{ publication.img.url }}"></a>
                 </div>
-
                 {% elif publication.img2 %}
-                 <div class="rounded">
+                <div class="place-self-center py-2">
 
-                <img       src="{{ publication.img2.url }}"
-                            width="640"
-                            height="264">
+                   <a href="{% url 'publicationdetail' publication.pk %}"> <img
+                        class = "max-h-72 max-w-full shadow hover:shadow-lg rounded"
+                        src="{{ publication.img2.url }}"></a>
                 </div>
-
-
-
                      {% elif publication.pdf %}
 
-                <div class="text-center text-lg font-bold text-yellow-300">
+                <div class="text-center text-lg font-bold  py-4 ">
 
-                    <a href="{{publication.pdf.url}}">Documento PDF Adjunto <br> &#128196</a>
-
+                    <a class="justify-self-center  shadow hover:opacity-20 text-gray-200" href="{{publication.pdf.url}}">Documento Adjunto <br> <i class="fa fa-file-pdf-o fa-4x text-red-300"></i></a>
                 </div>
 
-                {% else %}
-
-               <div class="rounded">
-
-                {{map|safe}}
-
-               </div>
-
-                {% endif %}
+                    {% endif %}
 
 
-                <div class="grid mt-8 grid-cols-2 py-2 text-gray-100">
+                <div class="grid grid-cols-1 text-gray-100">
+                    <div class="text-center">
 
-                    <div class="text-center text-green-500">
-                        <a>{{publication.likes.all.count}}</a><br>
+                        {% if publication.img %}
 
+                        <a href="{% url 'publicationdetail' publication.pk %}"> <i class="fa fa-file-image-o" style="color:#67E8F9"></i> </a>
+                        {% endif %}
+                        {% if publication.img2 %}
+                        <a href="{% url 'publicationdetail' publication.pk %}"> <i class="fa fa-file-image-o" style="color:#67E8F9"></i> </a>
 
-                            <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded" type="submit">
-                                <a href="{% url 'publicationwdetail' publication.pk %}">&#10004</a></button>
-
-                        </div>
-
-                    <div class="text-center text-red-500 ">
-
-                        <a>{{publication.dislikes.all.count}}</a><br>
-
-
-
-                            <button  class = "hover:bg-gray-700 bg-gray-800 py-2 px-4  rounded" >
-                                <a href="{% url 'publicationwdetail' publication.pk %}">&#10006</a></button>
-
+                        {% endif %}
+                        {% if publication.video %}
+                        <a href="{% url 'publicationdetail' publication.pk %}"> <i class="fa fa-file-video-o" style="color:#67E8F9"></i> </a>
+                        {% endif %}
+                        {% if publication.pdf %}
+                        <a href="{% url 'publicationdetail' publication.pk %}"> <i class="fa fa-file-pdf-o" style="color:#67E8F9"></i> </a>
+                        {% endif %}
                     </div>
                 </div>
 
+                <div class="pb-4">
+
+                    {% for tag in publication.tags.all %}
+
+                    <a href="{% url 'publicationtags' tag.slug %}" class = "text-xs font-serif" style="color:#67E8F9"> {{tag.name}}</a>
+                    {% endfor %}
+
+                </div>
+                {%if publication.uname == user%}
+
+                <div class="grid grid-cols-2 align-text-bottom">
+
+                    <div class="text-right justify-self-end pr-4 w-8 text-gray-300" >
+                        <a href="{% url 'publicationupdate' publication.id %}">
+                            <i class="fa fa-pencil-square-o  "></i>
+                        </a>
+                    </div>
+                    <div class=" text-left justify-self-start pl-4 w-8 text-gray-300">
+
+                        <a href="{% url 'publicationdelete' publication.id %}">
+                            <i class="fa fa-trash "></i>
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+
+    {% for publication in publicationw %}
+
+        <section class = "shadow-lg flex justify-center text-gray-100 my-4 md:w-2/5 w-11/12 rounded-lg bg-gray-900">
+            <div class = "grid grid-cols-1 w-11/12">
+                 <div class = "grid grid-cols-2 pb-6 pt-4">
+                    <div class = " ">
+
+                        <button class="outline-none focus:outline-none" type="button" onclick="openPopover(event,'{{publication.id}}')">
+                            <img href="{% url 'profile' publication.uname %}" class="rounded shadow hover:shadow-lg"
+                            src="{{ publication.uname.profile.image.url }}"
+                            width= "50"
+                            height= "50"></button>
+
+                            <a class ="hover:text-gray-600 text-sm" href="{% url 'profile' publication.uname %}">
+                            <h4 style="color:#67E8F9">{{publication.uname}}</h4></a>
+
+                        <div class="grid grid-cols-1 max-w-max  hidden font-normal leading-normal text-sm  text-left no-underline break-words rounded-lg shadow" id="{{publication.id}}">
+                          <div>
+                            <img href="{% url 'profile' publication.uname %}" class="rounded"
+                            src="{{ publication.uname.profile.image.url }}"
+                            width= "250"
+                            height= "250">
+                            </div>
+                            <div class="bg-gray-900 text-white p-3 rounded">
+                              {{publication.uname.profile.bio}}
+                            </div>
+
+                            <div class="bg-gray-900 p-3 rounded">
+                                  <a style="color:#67E8F9" class = "text-xs" >{{publication.uname.profile.followers.all.count}}</a>
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="text-right">
+                        <a href="{% url 'publicationwdetail' publication.pk %}"><h1 class="md:text-base text-sm text-yellow-200 capitalize">{{publication.case_id}}</h1></a>
+                        <a href="{% url 'publicationwdetail' publication.pk %}"
+                           class = "font-serif  text-xs">{{publication.datatime|naturaltime}}</a><br>
+                           <a class="text-xs text-yellow-200" href="{% url 'publicationwdetail' publication.pk %}"><i class="fa fa-comments-o  "> </i> {{publication.comments.all.count}}</a>
+                           <a class="text-xs" style="color:#67E8F9" href="{% url 'publicationwdetail' publication.pk %}">  <i class="fa fa-thumbs-up" ></i> {{publication.likes.all.count}}</a>
+                           <a class="text-xs text-red-300" href="{% url 'publicationwdetail' publication.pk %}">  <i class="fa fa-thumbs-down  "> </i> {{publication.dislikes.all.count}}</a>
+
+
+
+
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 overflow-auto max-h-16">
+
+                    <p class="text-left break-words md:text-sm text-xs ">{{publication.tag_text|safe}}</p>
+
+                </div>
+
+
+
+
+                <div class="pt-2">
+
+                <p class="font-serif text-left break-words  md:text-sm text-xs"> {{publication.addresss}}</p>
+
+                </div>
+
+                  {% if publication.video %}
+
+
+
+
+
+                <div class="">
+
+
+
+                      <video
+
+                        id="my-videow"
+                        class="video-js vjs-theme-city rounded w-full"
+                        controls = "True"
+                        preload="metadata"
+                        style=""
+                        width = "480"
+                        height="240"
+                        language="es"
+
+
+                        data-setup="{}">
+                        <source src="{{ publication.video.url }}" />
+
+                      </video>
+
+                       <style>
+
+
+
+                          .vjs-theme-city .vjs-big-play-button {
+                                  border-color: #67E8F9;
+                                  background: #011226;
+
+                                }
+
+                        .vjs-theme-city .vjs-big-play-button {
+                            line-height: 1em;
+                              height: 1em;
+                              width 2em;
+                              border-radius: 3em;
+
+
+                        }
+
+
+                        .vjs-theme-city .vjs-play-progress {
+                                      background: #67E8F9;
+                                    }
+
+                      </style>
+
+                </div>
+                {% elif publication.img %}
+                <div class="place-self-center py-2">
+                    <a href="{% url 'publicationwdetail' publication.pk %}"><img
+                        class = "max-h-72 max-w-full shadow hover:shadow-lg rounded"
+                        src="{{ publication.img.url }}"></a>
+                </div>
+                {% elif publication.img2 %}
+                <div class="place-self-center py-2">
+
+                   <a href="{% url 'publicationwdetail' publication.pk %}"> <img
+                        class = "max-h-72 max-w-full shadow hover:shadow-lg rounded"
+                        src="{{ publication.img2.url }}"></a>
+                </div>
+                     {% elif publication.pdf %}
+
+                 <div class="text-center text-lg font-bold  py-4 ">
+
+                    <a class="justify-self-center  shadow hover:opacity-20 text-gray-200" href="{{publication.pdf.url}}">Documento Adjunto <br> <i class="fa fa-file-pdf-o fa-4x text-red-300"></i></a>
+                </div>
+                {% else %}
+
+                     <div class="pb-2 ">
+
+                   {{publication.mapaddress|safe}}
+                </div>
+
+                    {% endif %}
+
+
+
+
+                <div class="grid  grid-cols-1 text-gray-100">
+
+                    <div class="text-center text-yellow-200">
+
+                        {% if publication.img %}
+
+                        <a href="{% url 'publicationwdetail' publication.pk %}"> <i class="fa fa-file-image-o"></i> </a>
+                        {% endif %}
+                        {% if publication.img2 %}
+                        <a href="{% url 'publicationwdetail' publication.pk %}"> <i class="fa fa-file-image-o"></i> </a>
+
+                        {% endif %}
+                        {% if publication.video %}
+
+
+                        <a href="{% url 'publicationwdetail' publication.pk %}"> <i class="fa fa-file-video-o"></i> </a>
+                        {% endif %}
+
+                        {% if publication.pdf %}
+
+                        <a href="{% url 'publicationwdetail' publication.pk %}"> <i class="fa fa-file-pdf-o py-4"></i> </a>
+
+
+
+                        {% endif %}
+
+                        </div>
+
+
+                </div>
+
+                <div class="pb-2 text-sm text-yellow-200 font-serif ">
+
+                    {{publication.tag_category|safe}}
+
+                </div>
 
             {%if publication.uname == user%}
 
-            <div class="grid mt-8 grid-cols-2 py-8">
-                <a class="text-center" href="{% url 'publicationwupdate' publication.id %}">
-                    <button  class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded ">Editar</button>
+            <div class="grid grid-cols-2  align-text-bottom">
+                <a class="text-right px-2" href="{% url 'publicationwupdate' publication.pk %}">
+                    <button class = " py-1 rounded"><i class="fa fa-pencil-square-o  text-gray-300"></i></button>
                 </a>
-                <a class="text-center" href="{% url 'publicationwdelete' publication.id %}">
-                    <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
+                <a class="text-left px-2" href="{% url 'publicationwdelete' publication.pk %}">
+                    <button class = " py-1 rounded"><i class="fa fa-trash text-gray-300"></i></button>
                 </a>
             </div>
             {% endif %}
 
             </div>
 
-        </article>
+        </section>
     {% endfor %}
 
-    {% for publication in publicationi %}
-
-        <article class = "flex justify-center bg-gray-900 text-gray-100">
-            <div class = "grid grid-cols-1">
-                <div class = "grid grid-cols-2 pt-8">
-                    <div class = "pr-8">
-                        <img class="rounded"
-                        src="{{ publication.uname.profile.image.url }}"
-                        width= "50"
-                        height= "50">
-                    </div>
-                <div class="text-right">
-                    <a class="transform hover:text-gray-600" href="{% url 'profile' publication.uname %}"><h4>{{publication.uname}}</h4></a>
-                    <p class = "font-serif">{{publication.datatime}}</p>
-
-                </div>
 
 
-                </div>
 
-                <div class="grid grid-cols-1">
+                        <script src="//vjs.zencdn.net/7.16.0/video.min.js"></script>
 
-                <div class="grid grid-cols-1">
-                <h5 class="text-lg">{{publication.text}}</h5>
-                {%if publication.uname == user%}
-                </div>
+                        <script src="https://unpkg.com/@popperjs/core@2.9.1/dist/umd/popper.min.js" charset="utf-8"></script>
 
-                <div class="grid grid-cols-2">
-                <a class="text-center" href="{% url 'publicationiupdate' publication.id %}">
-                <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Editar</button>
-                </a>
-                <a class="text-center" href="{% url 'publicationidelete' publication.id %}">
-                <button class = "hover:bg-gray-700 bg-gray-800 py-2 px-4 rounded">Borrar</button>
-                </a>
-                </div>
 
-                {% endif %}
-                </div>
-                </div>
 
-        </article>
-    {% endfor %}
+                        <script>
+                          function openPopover(event,popoverID){
+                            let element = event.target;
+                            while(element.nodeName !== "BUTTON"){
+                              element = element.parentNode;
+                            }
+                            var popper = Popper.createPopper(element, document.getElementById(popoverID), {
+                              placement: 'right-end'
+                            });
+                            document.getElementById(popoverID).classList.toggle("hidden");
+                          }
+                        </script>
+
+
+
+
+
 
     {%endblock content%}

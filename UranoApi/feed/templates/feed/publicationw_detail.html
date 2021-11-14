@@ -4,13 +4,11 @@
     {% load humanize %}
 
 
-        <section class = " shadow grid grid-cols-1 justify-center justify-items-center bg-gray-900 text-gray-100 my-4 md:w-2/5 w-full">
-
-
+              <section class = " shadow-lg grid grid-cols-1 justify-center justify-items-center text-gray-100 my-4 md:w-2/5 w-11/12 rounded-lg bg-gray-900">
 
             <div class = "grid grid-cols-1 w-11/12">
-                <div class = "grid grid-cols-2 pt-8 py-8">
-                    <div class = "pr-8 ">
+                <div class = "grid grid-cols-2 pb-6 pt-4">
+                    <div class = "">
 
 
                         <button class="outline-none focus:outline-none" type="button" onclick="openPopover(event,'{{publicationw.id}}')">
@@ -19,113 +17,455 @@
                             width= "50"
                             height= "50"></button>
 
-                             <a class ="transform hover:text-gray-600 text-sm" href="{% url 'profile' publicationw.uname %}">
-                                <h4>{{publicationw.uname}}</h4></a>
+                             <a class ="hover:text-gray-600 text-sm" href="{% url 'profile' publicationw.uname %}">
+                                <h4 style="color:#67E8F9">{{publicationw.uname}}</h4></a>
 
-                        <div class="w-2/4 md:1/4 hidden border-0 ml-3 block z-39 font-normal leading-normal text-sm text-left no-underline break-words rounded-lg shadow" id="{{publicationw.id}}">
+                        <div class="grid grid-cols-1 max-w-max  hidden font-normal leading-normal text-sm text-left no-underline break-words rounded-lg shadow" id="{{publicationw.id}}">
                             <div>
-                                <img href="{% url 'profile' publicationw.uname %}" class="z-25 rounded"
+                                <img href="{% url 'profile' publicationw.uname %}" class="rounded"
                                 src="{{ publicationw.uname.profile.image.url }}"
                                 width= "250"
                                 height= "250">
                             </div>
-                            <div class="bg-gray-900 text-white p-3 z-26">
+                            <div class="bg-gray-900 text-white p-3 rounded">
                                   {{publicationw.uname.profile.bio}}
                             </div>
+
+                            <div class="bg-gray-900 p-3 rounded">
+                                  <a style="color:#67E8F9" class = "text-xs" >{{publication.uname.profile.followers.all.count}}</a>
+                            </div>
+
+
                         </div>
                     </div>
-                    <div class="text-right px-2">
+                    <div class="text-right ">
+                        <a href="{% url 'publicationwdetail' publicationw.pk %}"><h1 class="md:text-base text-sm text-yellow-200 capitalize">{{publicationw.case_id}}</h1></a>
                         <a href="{% url 'publicationwdetail' publicationw.pk %}" class = "font-serif text-xs">
                             {{publicationw.datatime|naturaltime}}</a> <br>
 
+                        <a class="text-xs text-yellow-200" href="{% url 'publicationwdetail' publicationw.pk %}"><i class="fa fa-comments-o  "> </i> {{publicationw.comments.all.count}}</a>
 
                     </div>
 
                 </div>
 
-            <div>
+            <div class="pb-2 text-sm text-yellow-200 font-serif ">
 
-                {{map|safe}}
-            </div>
-
-            <div>
-
-                {{publicationw.category}}
-            </div>
-
-            <div class="grid grid-cols-1 ">
-                <div class="grid grid-cols-1">
-                    <p class="text-left break-words md:text-sm text-xs">{{publicationw.tag_text|safe}}</p>
+                    {{publicationw.tag_category|safe}}
 
                 </div>
 
-                  {% if publicationw.video %}
 
-                <div class="">
+             <div class="pb-2 ">
 
-                      <video
+                   {{publicationw.mapaddress|safe}}
+            </div>
+
+
+            <div class="grid grid-cols-1 ">
+                <div class="grid grid-cols-1">
+                    <p class="text-left break-words md:text-sm text-xs ">{{ publicationw.tag_text|safe }}</p>
+
+                </div>
+
+                {% if publicationw.video %}
+
+                    <div class="py-2">
+
+                               <video
+
                         id="my-videow"
-                        class="video-js vjs-default-skin vjs-big-play-centered w-full"
+                        class="video-js vjs-theme-city rounded w-full"
                         controls = "True"
-                        preload="auto"
+                        preload="metadata"
+                        style=""
                         width = "480"
                         height="240"
+                        language="es"
 
 
                         data-setup="{}">
                         <source src="{{ publicationw.video.url }}" />
 
                       </video>
-                </div>
-                {% elif publicationw.img %}
-                <div class="place-self-center">
-                    <img
-                        class = "max-h-72 max-w-full "
-                        src="{{ publicationw.img.url }}">
-                </div>
-                {% elif publicationw.img2 %}
-                <div class="place-self-center">
 
-                    <img
-                        class = "max-h-72 max-w-full "
-                        src="{{ publicationw.img2.url }}">
-                </div>
-                     {% elif publicationww.pdf %}
+                       <style>
+                          .vjs-theme-city .vjs-big-play-button {
+                                  border-color: #67E8F9;
+                                  background: #011226;
 
-                <div class="text-center text-lg font-bold text-yellow-300 py-4 ">
+                                }
 
-                    <a class="justify-self-center" href="{{publicationw.pdf.url}}">Documento PDF Adjunto <br> &#128196</a>
-                </div>
+                        .vjs-theme-city .vjs-big-play-button {
+                            line-height: 1em;
+                              height: 1em;
+                              width 2em;
+                              border-radius: 3em;
+
+
+                        }
+
+
+                        .vjs-theme-city .vjs-play-progress {
+                                      background: #67E8F9;
+                                    }
+
+                      </style>
+                    </div>
+
 
                     {% endif %}
 
-                <div class="text-gray-100 ">
+
+                {% if publicationw.img and publicationw.img2 %}
+                <div class="grid grid-cols-2 max-h-52 p-2 ">
+                <div class="">
+                   <img alt="{{publicationw.uname}}" id="myImg"
+                        class = " object-scale-down h-48 w-full shadow-inner hover:shadow rounded"
+                        src="{{ publicationw.img.url }}">
+                </div>
+
+                <div class="">
+
+                    <img  alt="{{publicationw.uname}}" id="myImg2"
+                        class = "object-scale-down h-48 w-full shadow-inner hover:shadow rounded"
+                        src="{{ publicationw.img2.url }}">
+                </div>
+
+                </div>
+
+                <div id="myModal" class="modal" class="w-full h-full fixed hidden bg-900 opacity-30 ">
+
+                    <img id="img01"
+                        class = " modal-content"
+                        src="{{ publicationw.img.url }}">
+
+
+                        <div id="caption" class="text-center"></div>
+
+                        <h1 id="close" class="text-center"><i class="fa fa-times-circle fa-2x"></i></h1>
+
+                </div>
+
+                <div id="myModal2" class="modal" class="w-full h-full fixed hidden bg-900 opacity-30 ">
+
+                    <img id="img02"
+                        class = " modal-content"
+                        src="{{ publicationw.img.url }}">
+
+
+                        <div id="caption2" class="text-center"></div>
+
+                        <h1 id="close2" class=" text-center"><i class="fa fa-times-circle fa-2x"></i></h1>
+
+                </div>
+
+
+                <style>
+
+
+                        /* The Modal (background) */
+                        .modal {
+                          display: none; /* Hidden by default */
+                          position: fixed; /* Stay in place */
+                          z-index: 1; /* Sit on top */
+                          padding-top: 100px; /* Location of the box */
+                          left: 0;
+                          top: 0;
+                          width: 100%; /* Full width */
+                          height: 100%; /* Full height */
+                          overflow: auto; /* Enable scroll if needed */
+                          background-color: rgb(0,0,0); /* Fallback color */
+                          background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+                        }
+
+                        /* Modal Content (Image) */
+                        .modal-content {
+                          margin: auto;
+                          display: block;
+
+                          max-width: 90vw;
+                          max-height:90vh;
+                        }
+
+                                               /* Add Animation - Zoom in the Modal */
+                        .modal-content, #caption {
+                          animation-name: zoom;
+                          animation-duration: 0.6s;
+                        }
+
+                        @keyframes zoom {
+                          from {transform:scale(0)}
+                          to {transform:scale(1)}
+                        }
+
+                        /* 100% Image Width on Smaller Screens */
+                        @media only screen and (max-width: 90vh){
+                          .modal-content {
+                            width: 100%;
+                          }
+
+                </style>
+
+                <script>
+
+
+                    var modal = document.getElementById("myModal");
+
+                    // Get the image and insert it inside the modal - use its "alt" text as a caption
+                    var img = document.getElementById("myImg");
+                    var modalImg = document.getElementById("img01");
+                    var captionText = document.getElementById("caption");
+                    img.onclick = function(){
+                      modal.style.display = "block";
+                      modalImg.src = this.src;
+                      captionText.innerHTML = this.alt;
+                    }
+
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementById("close");
+
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function() {
+                      modal.style.display = "none";
+                    }
+
+                </script>
+
+                 <script>
+
+
+                    var modal = document.getElementById("myModal2");
+
+                    // Get the image and insert it inside the modal - use its "alt" text as a caption
+                    var img = document.getElementById("myImg2");
+                    var modalImg = document.getElementById("img02");
+                    var captionText = document.getElementById("caption2");
+                    img.onclick = function(){
+                      modal.style.display = "block";
+                      modalImg.src = this.src;
+                      captionText.innerHTML = this.alt;
+                    }
+
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementById("close2");
+
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function() {
+                      modal.style.display = "none";
+                    }
+
+                </script>
+                {% elif publicationw.img %}
+
+
+                <div class="">
+                   <img alt="{{publicationw.uname}}" id="myImg"
+                        class = " object-scale-down h-48 w-full shadow hover:shadow-lg"
+                        src="{{ publicationw.img.url }}">
+                </div>
+
+                <div id="myModal" class="modal" class="w-full h-full fixed hidden bg-900 opacity-30 ">
+
+                    <img id="img01"
+                        class = " modal-content"
+                        src="{{ publicationw.img.url }}">
+
+
+                        <div id="caption" class="text-center"></div>
+
+                        <h1 id="close" class="text-center"><i class="fa fa-times-circle fa-2x"></i></h1>
+
+                </div>
+                 <style>
+
+
+                        /* The Modal (background) */
+                        .modal {
+                          display: none; /* Hidden by default */
+                          position: fixed; /* Stay in place */
+                          z-index: 1; /* Sit on top */
+                          padding-top: 100px; /* Location of the box */
+                          left: 0;
+                          top: 0;
+                          width: 100%; /* Full width */
+                          height: 100%; /* Full height */
+                          overflow: auto; /* Enable scroll if needed */
+                          background-color: rgb(0,0,0); /* Fallback color */
+                          background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+                        }
+
+                        /* Modal Content (Image) */
+                        .modal-content {
+                          margin: auto;
+                          display: block;
+
+                          max-width: 90vw;
+                          max-height:90vh;
+                        }
+
+                                               /* Add Animation - Zoom in the Modal */
+                        .modal-content, #caption {
+                          animation-name: zoom;
+                          animation-duration: 0.6s;
+                        }
+
+                        @keyframes zoom {
+                          from {transform:scale(0)}
+                          to {transform:scale(1)}
+                        }
+
+                        /* 100% Image Width on Smaller Screens */
+                        @media only screen and (max-width: 700px){
+                          .modal-content {
+                            width: 100%;
+                          }
+
+                </style>
+
+                <script>
+                    var modal = document.getElementById("myModal");
+
+                    // Get the image and insert it inside the modal - use its "alt" text as a caption
+                    var img = document.getElementById("myImg");
+                    var modalImg = document.getElementById("img01");
+                    var captionText = document.getElementById("caption");
+                    img.onclick = function(){
+                      modal.style.display = "block";
+                      modalImg.src = this.src;
+                      captionText.innerHTML = this.alt;
+                    }
+
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementById("close");
+
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function() {
+                      modal.style.display = "none";
+                    }
+
+                </script>
+                {% elif publicationw.img2 %}
+                 <div class="">
+
+                    <img  alt="{{publicationw.wuname}}" id="myImg2"
+                        class = "object-scale-down h-48 w-full shadow hover:shadow-lg"
+                        src="{{ publicationw.img2.url }}">
+                </div>
+
+                <div id="myModal2" class="modal" class="w-full h-full fixed hidden bg-900 opacity-30 ">
+
+                    <img id="img02"
+                        class = " modal-content"
+                        src="{{ publicationw.img.url }}">
+
+
+                        <div id="caption2" class="text-center"></div>
+
+                        <h1 id="close2" class=" text-center hover:opacity-20"><i class="fa fa-times-circle fa-2x"></i></h1>
+
+                </div>
+
+                <style>
+
+                        /* The Modal (background) */
+                        .modal {
+                          display: none; /* Hidden by default */
+                          position: fixed; /* Stay in place */
+                          z-index: 1; /* Sit on top */
+                          padding-top: 100px; /* Location of the box */
+                          left: 0;
+                          top: 0;
+                          width: 100%; /* Full width */
+                          height: 100%; /* Full height */
+                          overflow: auto; /* Enable scroll if needed */
+                          background-color: rgb(0,0,0); /* Fallback color */
+                          background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+                        }
+
+                        /* Modal Content (Image) */
+                        .modal-content {
+                          margin: auto;
+                          display: block;
+
+                          max-width: 90vw;
+                          max-height:90vh;
+                        }
+                                               /* Add Animation - Zoom in the Modal */
+                        .modal-content, #caption {
+                          animation-name: zoom;
+                          animation-duration: 0.6s;
+                        }
+
+                        @keyframes zoom {
+                          from {transform:scale(0)}
+                          to {transform:scale(1)}
+                        }
+
+                        /* 100% Image Width on Smaller Screens */
+                        @media only screen and (max-width: 700px){
+                          .modal-content {
+                            width: 100%;
+                          }
+
+                </style>
+                 <script>
+                    var modal = document.getElementById("myModal2");
+
+                    // Get the image and insert it inside the modal - use its "alt" text as a caption
+                    var img = document.getElementById("myImg2");
+                    var modalImg = document.getElementById("img02");
+                    var captionText = document.getElementById("caption2");
+                    img.onclick = function(){
+                      modal.style.display = "block";
+                      modalImg.src = this.src;
+                      captionText.innerHTML = this.alt;
+                    }
+
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementById("close2");
+
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function() {
+                      modal.style.display = "none";
+                    }
+                </script>
+                {% endif %}
+
+               {% if publicationw.pdf %}
+
+                 <div class="text-center text-lg font-bold  py-4 ">
+
+                    <a class="justify-self-center  shadow hover:opacity-20 text-gray-200" href="{{publicationw.pdf.url}}">Documento Adjunto <br> <i class="fa fa-file-pdf-o fa-4x text-red-300"></i></a>
+                </div>
+                {% endif %}
+
+                <div class="pb-4">
 
                     {% for tag in publicationw.involved.all %}
 
-                    <a href="{% url 'publicationtags' tag.slug %}" class = " md:text-sm text-xs" style="color:#67E8F9"> {{tag.name}}</a>
+                    <a href="{% url 'publicationtags' tag.slug %}" class = "text-xs font-serif" style="color:#67E8F9"> {{tag.name}}</a>
                     {% endfor %}
 
                 </div>
-                {% if not publicationw.uname == user %}
-                <div class="grid mt-8 grid-cols-2 py-2 text-gray-100">
 
-                    <div class="text-center text-green-500">
+                {% if not publicationw.uname == request.user %}
+                <div class="grid grid-cols-2">
 
-                        <form method="POST" action="{% url 'like' publicationw.pk %}">
+                    <div class="text-center">
+
+                        <form method="POST" action="{% url 'likew' publicationw.pk %}">
                             {% csrf_token %}
                             <input type="hidden" name="next" value={{request.path}}>
-                           <button class="text-xs" style="color:#67E8F9" type="submit">
+                            <button class="text-xs" style="color:#67E8F9" type="submit">
                             <i class="fa fa-thumbs-up" ></i> {{publicationw.likes.all.count}}</button>
 
                         </form>
 
                     </div>
 
-                    <div class="text-center text-red-500">
-
-
-                        <form method="POST" action="{% url 'dislikew' publicationw.pk %}">
+                    <div class="text-center">
+                        <form method="POST" action="{% url 'dislikew' publicationw.pk%}">
                             {% csrf_token %}
                             <input type="hidden" name="next" value={{request.path}}>
                             <button class="text-xs text-red-300"type="submit">
@@ -133,24 +473,22 @@
 
                         </form>
 
-
                     </div>
                 </div>
 
                 {% else %}
 
-                <div class="grid grid-cols-2">
+                <div class="grid grid-cols-2 ">
 
-                    <div class="text-center">
+                <div class="text-center">
                         <a class="text-xs" style="color:#67E8F9">
-                            <i class="fa fa-thumbs-up" ></i> {{publicationw.likes.all.count}}</a>
+                            <i class="fa fa-thumbs-up"></i> {{publicationw.likes.all.count}}</a>
                     </div>
 
                     <div class="text-center">
                        <a class="text-xs text-red-300">
                             <i class="fa fa-thumbs-down"></i> {{publicationw.dislikes.all.count}}</a>
                     </div>
-
                 </div>
 
                 {% endif %}
@@ -174,69 +512,70 @@
 
             </div>
         </div>
-        <div class="w-11/12 justify-center justify-items-center py-4">
-            <form class="justify-items-center" method="post" enctype="multipart/form-data">
-
+    </section>
+    <section class="grid grid-cols-1 justify-center justify-items-center md:w-2/5 w-11/12 bg-gray-900 shadow hover:shadow-lg rounded my-2">
+          <div class="grid grid-cols-1 w-11/12 justify-center py-4">
+            <form class="" method="post" enctype="multipart/form-data">
                  {% csrf_token %}
-
                  {{form.text}}
-
                 <button class = "text-sm hover:bg-gray-500 bg-gray-800 text-gray-100
                                                     py-2 px-4 rounded " type = "submit">Comentar</button>
             </form>
 
-        </div>
-        <div class = "grid grid-cols-1 w-11/12">
+            </div>
 
-
+        </section>
             {% for comment in  comments %}
 
-             <div class = "grid grid-cols-2">
+            <section class = "grid grid-cols-1 justify-center justify-items-center md:w-2/5 w-11/12 bg-gray-900 shadow hover:shadow-lg rounded my-2">
 
-                <div class = "pr-8 ">
+             <div class = "grid grid-cols-1 w-11/12 justify-center py-4 text-gray-100">
+                 <div class = "grid grid-cols-2">
+                    <div class = "pr-8 ">
 
-                        <button class="outline-none focus:outline-none" type="button" onclick="openPopover(event,'{{comment.id}}')">
-                            <img href="{% url 'profile' comment.uname %}" class="rounded shadow hover:shadow-lg"
-                            src="{{ comment.uname.profile.image.url }}"
-                            width= "50"
-                            height= "50"></button>
-
-                             <a class ="transform hover:text-gray-600 text-sm" href="{% url 'profile' comment.uname %}">
-                                <h4>{{comment.uname}}</h4></a>
-
-                        <div class="grid grid-cols-1 max-w-max  hidden border-0 ml-3 block font-normal leading-normal text-sm text-left no-underline break-words rounded-lg shadow" id="{{comment.id}}">
-                            <div>
-                                <img href="{% url 'profile' comment.uname %}" class="z-25 rounded"
+                            <button class="outline-none focus:outline-none" type="button" onclick="openPopover(event,'{{comment.id}}')">
+                                <img href="{% url 'profile' comment.uname %}" class="rounded shadow hover:shadow-lg"
                                 src="{{ comment.uname.profile.image.url }}"
-                                width= "250"
-                                height= "250">
+                                width= "50"
+                                height= "50"></button>
+
+                                 <a class ="transform hover:text-gray-600 text-sm"  href="{% url 'profile' comment.uname %}">
+                                    <h4 style="color:#67E8F9">{{comment.uname}}</h4></a>
+
+                            <div class="grid grid-cols-1 max-w-max  hidden border-0 ml-3 block font-normal leading-normal text-sm text-left no-underline break-words rounded-lg shadow" id="{{comment.id}}">
+                                <div>
+                                    <img href="{% url 'profile' comment.uname %}" class="z-25 rounded"
+                                    src="{{ comment.uname.profile.image.url }}"
+                                    width= "250"
+                                    height= "250">
+                                </div>
+                                <div class="bg-gray-900 text-white p-3 z-26">
+                                      {{comment.uname.profile.bio}}
+                                </div>
                             </div>
-                            <div class="bg-gray-900 text-white p-3 z-26">
-                                  {{comment.uname.profile.bio}}
-                            </div>
-                        </div>
-                </div>
+                    </div>
 
                 <div class="text-right px-2 font-serif text-xs">
 
                             {{comment.datatime|naturaltime}}
-
+                </div>
 
                 </div>
             </div>
 
-            <div>
-            {{comment.tag_text|safe}}
+            <div class="grid grid-cols-1 w-11/12 py-2">
+                    <p class="text-left break-words md:text-sm text-xs text-gray-100">{{ comment.tag_text|safe }}</p>
+
             </div>
 
-                {% if not comment.uname == user %}
-                <div class="grid grid-cols-2">
+                {% if not comment.uname == request.user %}
+                <div class="grid grid-cols-2 w-11/12">
 
                     <div class="text-center">
 
 
 
-                        <form method="POST" action="{% url 'likec' publicationw.pk comment.pk %}">
+                        <form method="POST" action="{% url 'likecw' publicationw.pk comment.pk %}">
                             {% csrf_token %}
                             <input type="hidden" name="next" value={{request.path}}>
                             <button class="text-xs" style="color:#67E8F9" type="submit">
@@ -247,7 +586,7 @@
                     </div>
 
                     <div class="text-center">
-                        <form method="POST" action="{% url 'dislikec' publicationw.pk comment.pk %}">
+                        <form method="POST" action="{% url 'dislikecw' publicationw.pk comment.pk %}">
                             {% csrf_token %}
                             <input type="hidden" name="next" value={{request.path}}>
                             <button class="text-xs text-red-300"type="submit">
@@ -260,7 +599,7 @@
 
                 {% else %}
 
-                <div class="grid grid-cols-2 ">
+                <div class="grid grid-cols-2 w-11/12">
 
                 <div class="text-center">
                         <a class="text-xs" style="color:#67E8F9">
@@ -272,34 +611,26 @@
                             <i class="fa fa-thumbs-down"></i> {{comment.dislikes.all.count}}</a>
                     </div>
                 </div>
-
                 {% endif %}
-
-                {%if comment.uname == user%}
-
-                <div class="grid grid-cols-2 align-text-bottom">
+                {%if comment.uname == request.user%}
+                <div class="grid grid-cols-2 align-text-bottom w-11/12">
 
                     <div class="text-right justify-self-end pr-4 w-8 text-gray-300" >
-                        <a href="{% url 'commentupdate' publicationw.pk comment.pk %}">
+                        <a href="{% url 'commentwupdate' publicationw.pk comment.pk %}">
                             <i class="fa fa-pencil-square-o"></i>
                         </a>
                     </div>
                     <div class=" text-left justify-self-start pl-4 w-8 text-gray-300">
 
-                        <a href="{% url 'commentdelete' publicationw.pk comment.pk %}">
+                        <a href="{% url 'commentwdelete' publicationw.pk comment.pk %}">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>
                 </div>
                 {% endif %}
-
+                </section>
                 {% endfor %}
-
-            </div>
-
-
-        <script src="//vjs.zencdn.net/7.10.2/video.min.js"></script>
-
+      <script src="//vjs.zencdn.net/7.16.0/video.min.js"></script>
                         <script src="https://unpkg.com/@popperjs/core@2.9.1/dist/umd/popper.min.js" charset="utf-8"></script>
 
                         <script>
@@ -314,7 +645,19 @@
                             document.getElementById(popoverID).classList.toggle("hidden");
                           }
                         </script>
+                        <style>
+                          .vjs-theme-city .vjs-big-play-button {
+                                  border-color: #67E8F9;
+                                  background: #011226;
+                                }
+                        .vjs-theme-city .vjs-play-progress {
+                                      background: #67E8F9;
+                                    }
+                      </style>
+
 
     {%endblock content%}
+
+
 
 
